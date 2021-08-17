@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "git@github.com:Incorta/create-incorta-visual.git",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "commander": "^8.1.0"
+  }
 }
