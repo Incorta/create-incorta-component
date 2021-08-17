@@ -1,0 +1,9 @@
+{
+  "name": "create-incorta-visual",
+  "version": "1.0.0",
+  "description": "Generate a new Incorta visualization",
+  "main": "index.js",
+  "repository": "git@github.com:Incorta/create-incorta-visual.git",
+  "license": "MIT",
+  "private": false
+}
