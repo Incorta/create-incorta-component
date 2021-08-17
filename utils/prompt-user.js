@@ -2,11 +2,6 @@
 
 const inquirer = require("inquirer");
 
-/**
- * @param {string|null} projectName - The name/path of project
- * @param {string|null} template - The Github repo of the template
- * @returns Object containting prompt answers
- */
 module.exports = async function promptUser(projectName) {
   const questions = await getPromptQuestions(projectName);
   const [initialResponse, templateQuestion] = await Promise.all([
@@ -16,10 +11,6 @@ module.exports = async function promptUser(projectName) {
   return initialResponse;
 };
 
-/**
- *
- * @returns Array of prompt question objects
- */
 async function getPromptQuestions(projectName, template) {
   return [
     {
