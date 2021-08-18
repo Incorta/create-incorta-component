@@ -2,6 +2,7 @@ const execa = require("execa");
 const { join } = require("path");
 const express = require("express");
 const chalk = require("chalk");
+const { shouldUseYarn: shouldUseYarnCheck } = require("../utils/has-yarn");
 
 const runDevServer = async () => {
   try {
@@ -21,7 +22,13 @@ const runDevServer = async () => {
             `)
       );
     });
-    await execa("yarn", ["start"]);
+    const shouldUseYarn = shouldUseYarnCheck(currentProcessDir);
+
+    if (shouldUseYarn) {
+      await execa("yarn", ["start"]);
+    } else {
+      await execa("npm", ["run", "start"]);
+    }
   } catch (e) {
     console.log(e);
   }

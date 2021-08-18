@@ -4,6 +4,8 @@ const archiver = require("archiver");
 const { join } = require("path");
 const chalk = require("chalk");
 
+const { shouldUseYarn: shouldUseYarnCheck } = require("../utils/has-yarn");
+
 function zipDirectory(source, out) {
   const bundleJs = join(source, "bundle.modern.js");
   const bundleCss = join(source, "bundle.css");
@@ -31,15 +33,10 @@ const createBuildPackage = async () => {
   const currentProcessDir = process.cwd();
   try {
     const distPath = join(currentProcessDir, "dist");
-
-    const packageLockFilePath = join(currentProcessDir, "package-lock.json");
-    const yarnLockFilePath = join(currentProcessDir, "yarn-lock.json");
-
-    const useYarn =
-      fs.existsSync(yarnLockFilePath) && !fs.existsSync(packageLockFilePath);
+    const shouldUseYarn = shouldUseYarnCheck(currentProcessDir);
 
     console.log(chalk.gray("Building bundle..."));
-    if (useYarn) {
+    if (shouldUseYarn) {
       await execa("yarn", ["build"]);
     } else {
       await execa("yarn", ["run", "build"]);
