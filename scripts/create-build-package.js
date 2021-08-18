@@ -31,12 +31,14 @@ function zipDirectory(source, out) {
 }
 
 const createBuildPackage = async () => {
+  const currentProcessDir = process.cwd();
   try {
+    console.log("tessssssssst");
     // TODO: Removed
     // console.log(chalk.gray("Build started"));
     // await execa("yarn", ["run", "inner-yarn-build"]);
 
-    const distPath = join(__dirname, "shehab", "dist");
+    const distPath = join(currentProcessDir, "shehab", "dist");
 
     //Compress Bundle
     console.log(chalk.gray("Compress start"));

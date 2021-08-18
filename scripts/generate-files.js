@@ -2,9 +2,9 @@ const chalk = require("chalk");
 const fse = require("fs-extra");
 const { join } = require("path");
 
-const visualizationPackageJsonGenerator = require("./resources/templates/package.json.js");
-const visualizationIndexGenerator = require("./resources/templates/index.tsx.js");
-const chartDefinitionGenerator = require("./resources/templates/definition.ts.js");
+const visualizationPackageJsonGenerator = require("../resources/templates/package.json.js");
+const visualizationIndexGenerator = require("../resources/templates/index.tsx.js");
+const chartDefinitionGenerator = require("../resources/templates/definition.ts.js");
 
 const createPackageJSON = async ({ options, rootPath }) => {
   const { directory, author, description } = options;
@@ -35,8 +35,9 @@ const createVisualizationDefinitionFile = async ({ options, rootPath }) => {
 };
 
 async function generateFiles(directory, options) {
-  const rootPath = join(__dirname, directory);
-  const resources = join(__dirname, "resources");
+  const currentProcessDir = process.cwd();
+  const rootPath = join(currentProcessDir, directory);
+  const resources = join(currentProcessDir, "resources");
   const resourcesFiles = join(resources, "files");
 
   console.log(`Creating a new Incorta visual at ${chalk.green(directory)}.`);

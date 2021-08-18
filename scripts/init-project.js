@@ -1,4 +1,4 @@
-const promptUser = require("./utils/prompt-user");
+const promptUser = require("../utils/prompt-user");
 const generateFiles = require("./generate-files");
 
 async function initProject(dir, program) {
