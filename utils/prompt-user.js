@@ -38,11 +38,11 @@ async function getPromptQuestions(projectName, template) {
       choices: [
         {
           name: "yarn",
-          value: true,
+          value: "yarn",
         },
         {
           name: "npm",
-          value: false,
+          value: "npm",
         },
       ],
       default: "yarn",

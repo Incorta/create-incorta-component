@@ -1,5 +1,5 @@
 module.exports = (opts) => {
-  const { directory: name, description, author } = opts;
+  const { directory: name, description, author, useYarn } = opts;
   return {
     name,
     version: "0.0.1",
@@ -57,7 +57,7 @@ module.exports = (opts) => {
       "react-dom": "^17.0.2",
       "react-scripts": "^3.4.1",
       "replace-in-file": "^6.2.0",
-      typescript: "^4.3.5",
+      typescript: useYarn ? "^4.3.5" : "^3.2.1", //TODO: Discuss with Riyad
     },
     files: ["dist"],
     dependencies: {

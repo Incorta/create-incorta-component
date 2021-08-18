@@ -2,10 +2,12 @@
 
 const execa = require("execa");
 
-module.exports = function hasYarn() {
+module.exports = async function hasYarn() {
   try {
-    const { code } = execa.shellSync("yarnpkg --version");
-    if (code === 0) return true;
+    const { exitCode } = await execa("yarnpkg", ["--version"]);
+    if (exitCode === 0) {
+      return true;
+    }
     return false;
   } catch (err) {
     return false;

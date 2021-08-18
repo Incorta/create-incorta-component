@@ -1,6 +1,7 @@
 const chalk = require("chalk");
 const fse = require("fs-extra");
 const { join, resolve } = require("path");
+const execa = require("execa");
 
 const visualizationPackageJsonGenerator = require("../resources/templates/package.json.js");
 const visualizationIndexGenerator = require("../resources/templates/index.tsx.js");
@@ -62,6 +63,17 @@ async function generateFiles(directory, options) {
     await createVisualizationDefinitionFile({ options, newVisualPath });
 
     console.log(chalk.grey("Installing dependencies..."));
+    if (options.useYarn) {
+      await execa("yarn", {
+        // stdio: "inherit",
+        cwd: newVisualPath,
+      });
+    } else {
+      await execa("npm", ["install"], {
+        // stdio: "inherit",
+        cwd: newVisualPath,
+      });
+    }
 
     console.log(successMessage(directory));
   } catch (e) {
