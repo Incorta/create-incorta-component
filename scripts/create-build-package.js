@@ -4,9 +4,6 @@ const archiver = require("archiver");
 const { join } = require("path");
 const chalk = require("chalk");
 
-const BUNDLE_CSS_NAME = "bundle.css";
-const BUNDLE_JS_NAME = "bundle.modern.js";
-
 function zipDirectory(source, out) {
   const bundleJs = join(source, "bundle.modern.js");
   const bundleCss = join(source, "bundle.css");
@@ -52,16 +49,16 @@ const createBuildPackage = async () => {
 
     // Remove extra files in dist folder
     console.log(chalk.gray("Delete Extra Files start"));
-    removeExtraDistFiles(distPath);
+    await removeExtraDistFiles(distPath);
   } catch (e) {
     console.log(e);
   }
 };
 
-const removeExtraDistFiles = (distPath) => {
+const removeExtraDistFiles = async (distPath) => {
   fs.unlinkSync(join(distPath, "bundle.css"));
   fs.unlinkSync(join(distPath, "bundle.modern.js"));
-  fs.rmdirSync(join(distPath, "src"), { recursive: true });
+  await fs.rmdirSync(join(distPath, "src"), { recursive: true });
 };
 
 module.exports = createBuildPackage;

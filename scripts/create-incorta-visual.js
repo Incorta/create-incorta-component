@@ -4,6 +4,7 @@ const { Command } = require("commander");
 
 const initProject = require("./init-project");
 const createBuildPackage = require("./create-build-package");
+const runDevServer = require("./runDevServer");
 
 const checkBeforeInit = require("../utils/check-requirements");
 
@@ -21,7 +22,7 @@ createIncortaVisual
   .command("dev")
   .description("Open development server")
   .action(() => {
-    console.log("dev");
+    runDevServer();
   });
 
 createIncortaVisual
