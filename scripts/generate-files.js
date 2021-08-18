@@ -1,15 +1,15 @@
 const chalk = require("chalk");
 const fse = require("fs-extra");
-const { join } = require("path");
+const { join, resolve } = require("path");
 
 const visualizationPackageJsonGenerator = require("../resources/templates/package.json.js");
 const visualizationIndexGenerator = require("../resources/templates/index.tsx.js");
 const chartDefinitionGenerator = require("../resources/templates/definition.ts.js");
 
-const createPackageJSON = async ({ options, rootPath }) => {
+const createPackageJSON = async ({ options, newVisualPath }) => {
   const { directory, author, description } = options;
   await fse.writeJSON(
-    join(rootPath, "package.json"),
+    join(newVisualPath, "package.json"),
     visualizationPackageJsonGenerator({
       directory,
       author,
@@ -22,34 +22,44 @@ const createPackageJSON = async ({ options, rootPath }) => {
   console.log("package.json generated");
 };
 
-const createVisualizationIndexFile = async ({ options, rootPath }) => {
-  const indexPath = join(rootPath, "src", "index.tsx");
+const createVisualizationIndexFile = async ({ options, newVisualPath }) => {
+  const indexPath = join(newVisualPath, "src", "index.tsx");
   await fse.writeFile(indexPath, visualizationIndexGenerator(options));
   console.log("index.tsx file created");
 };
 
-const createVisualizationDefinitionFile = async ({ options, rootPath }) => {
-  const defPath = join(rootPath, "src", "definition.ts");
+const createVisualizationDefinitionFile = async ({
+  options,
+  newVisualPath,
+}) => {
+  const defPath = join(newVisualPath, "src", "definition.ts");
   await fse.writeFile(defPath, chartDefinitionGenerator(options));
   console.log("definition.ts file created");
 };
 
 async function generateFiles(directory, options) {
+  // Place where process is opened
   const currentProcessDir = process.cwd();
-  const rootPath = join(currentProcessDir, directory);
-  const resources = join(currentProcessDir, "resources");
+
+  // Root path of create-incorta-visual
+  const packageRootPath = resolve(__dirname, "..");
+
+  // new Visual Path
+  const newVisualPath = join(currentProcessDir, directory);
+
+  const resources = join(packageRootPath, "resources");
   const resourcesFiles = join(resources, "files");
 
   console.log(`Creating a new Incorta visual at ${chalk.green(directory)}.`);
   console.log("Creating files...");
 
   try {
-    await fse.copy(resourcesFiles, rootPath);
+    await fse.copy(resourcesFiles, newVisualPath);
     console.log("Files copied successfully");
 
-    await createPackageJSON({ options, rootPath });
-    await createVisualizationIndexFile({ options, rootPath });
-    await createVisualizationDefinitionFile({ options, rootPath });
+    await createPackageJSON({ options, newVisualPath });
+    await createVisualizationIndexFile({ options, newVisualPath });
+    await createVisualizationDefinitionFile({ options, newVisualPath });
 
     console.log(successMessage(directory));
   } catch (e) {
