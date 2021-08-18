@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("./create-build-package");
+require("./create-incorta-visual");
