@@ -30,12 +30,20 @@ function zipDirectory(source, out) {
 const createBuildPackage = async () => {
   const currentProcessDir = process.cwd();
   try {
-    console.log(chalk.gray("Installing Packages..."));
-    await execa("yarn");
-    console.log(chalk.gray("Building bundle..."));
-    await execa("yarn", ["build"]);
-
     const distPath = join(currentProcessDir, "dist");
+
+    const packageLockFilePath = join(currentProcessDir, "package-lock.json");
+    const yarnLockFilePath = join(currentProcessDir, "yarn-lock.json");
+
+    const useYarn =
+      fs.existsSync(yarnLockFilePath) && !fs.existsSync(packageLockFilePath);
+
+    console.log(chalk.gray("Building bundle..."));
+    if (useYarn) {
+      await execa("yarn", ["build"]);
+    } else {
+      await execa("yarn", ["run", "build"]);
+    }
 
     //Compress Bundle
     console.log(chalk.gray("Compress start"));
@@ -48,8 +56,11 @@ const createBuildPackage = async () => {
     }
 
     // Remove extra files in dist folder
-    console.log(chalk.gray("Delete Extra Files start"));
     await removeExtraDistFiles(distPath);
+    console.log(
+      chalk.black(`${chalk.cyan("dist/bundle.inc")} created sucessfully `) +
+        chalk.green("✅")
+    );
   } catch (e) {
     console.log(e);
   }
@@ -58,7 +69,7 @@ const createBuildPackage = async () => {
 const removeExtraDistFiles = async (distPath) => {
   fs.unlinkSync(join(distPath, "bundle.css"));
   fs.unlinkSync(join(distPath, "bundle.modern.js"));
-  await fs.rmdirSync(join(distPath, "src"), { recursive: true });
+  await fs.rm(join(distPath, "src"), { recursive: true }, (e) => {});
 };
 
 module.exports = createBuildPackage;
