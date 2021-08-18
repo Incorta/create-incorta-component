@@ -31,5 +31,21 @@ async function getPromptQuestions(projectName, template) {
       message: "Author name?",
       default: "dev",
     },
+    {
+      type: "list",
+      name: "tool",
+      message: "what do you use for package management?",
+      choices: [
+        {
+          name: "yarn",
+          value: true,
+        },
+        {
+          name: "npm",
+          value: false,
+        },
+      ],
+      default: "yarn",
+    },
   ];
 }

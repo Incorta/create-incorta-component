@@ -19,13 +19,13 @@ const createPackageJSON = async ({ options, newVisualPath }) => {
       spaces: 2,
     }
   );
-  console.log("package.json generated");
+  console.log(chalk.gray("package.json generated"));
 };
 
 const createVisualizationIndexFile = async ({ options, newVisualPath }) => {
   const indexPath = join(newVisualPath, "src", "index.tsx");
   await fse.writeFile(indexPath, visualizationIndexGenerator(options));
-  console.log("index.tsx file created");
+  console.log(chalk.gray("index.tsx file created"));
 };
 
 const createVisualizationDefinitionFile = async ({
@@ -34,7 +34,7 @@ const createVisualizationDefinitionFile = async ({
 }) => {
   const defPath = join(newVisualPath, "src", "definition.ts");
   await fse.writeFile(defPath, chartDefinitionGenerator(options));
-  console.log("definition.ts file created");
+  console.log(chalk.gray("definition.ts file created"));
 };
 
 async function generateFiles(directory, options) {
@@ -50,16 +50,18 @@ async function generateFiles(directory, options) {
   const resources = join(packageRootPath, "resources");
   const resourcesFiles = join(resources, "files");
 
-  console.log(`Creating a new Incorta visual at ${chalk.green(directory)}.`);
-  console.log("Creating files...");
+  console.log(
+    chalk.gray(`Creating a new Incorta visual at ${chalk.green(directory)}.`)
+  );
+  console.log(chalk.gray("Creating your files..."));
 
   try {
     await fse.copy(resourcesFiles, newVisualPath);
-    console.log("Files copied successfully");
-
     await createPackageJSON({ options, newVisualPath });
     await createVisualizationIndexFile({ options, newVisualPath });
     await createVisualizationDefinitionFile({ options, newVisualPath });
+
+    console.log(chalk.grey("Installing dependencies..."));
 
     console.log(successMessage(directory));
   } catch (e) {
@@ -70,7 +72,7 @@ async function generateFiles(directory, options) {
 
 const successMessage = (directory) => `
 
-        ${chalk.gray.underline("files created successfully 🎉🎉🎉")}
+        ${chalk.gray.underline("Files created successfully 🎉🎉🎉")}
 
         ${chalk.black("Go to your project directory:")}
 

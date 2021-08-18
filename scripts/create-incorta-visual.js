@@ -12,14 +12,14 @@ const createIncortaVisual = new Command("create-incorta-visual");
 
 createIncortaVisual
   .arguments("[directory]")
-  .description("create a new application")
+  .description("Create a new application")
   .action((directory) => {
     checkBeforeInit();
     initProject(directory, createIncortaVisual);
   });
 
 createIncortaVisual
-  .command("dev")
+  .command("start")
   .description("Open development server")
   .action(() => {
     runDevServer();
@@ -27,7 +27,7 @@ createIncortaVisual
 
 createIncortaVisual
   .command("package")
-  .description("build visualization")
+  .description("Build visualization")
   .action(() => {
     createBuildPackage();
   });

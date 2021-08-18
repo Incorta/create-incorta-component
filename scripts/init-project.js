@@ -1,22 +1,20 @@
 const promptUser = require("../utils/prompt-user");
+const validateDirectory = require("../utils/validate-directory");
 const generateFiles = require("./generate-files");
+const hasYarn = require("../utils/has-yarn");
 
 async function initProject(dir, program) {
   const prompt = await promptUser(dir, program.template);
   const directory = prompt.directory || dir;
+  const useNpm = prompt.tool === "npm";
 
-  if (!directory) {
-    console.error("Please specify the <directory> of your project");
-    // eslint-disable-next-line no-process-exit
-    process.exit(1);
-  }
-
+  await validateDirectory(directory);
   const options = {
     description: prompt.description,
     author: prompt.author,
+    useYarn: !useNpm && hasYarn(),
     directory,
   };
-
   return generateFiles(directory, options).then(() => {
     if (process.platform === "win32") {
       process.exit(0);
