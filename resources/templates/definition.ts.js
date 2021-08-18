@@ -26,6 +26,7 @@ interface MyChartDefinition extends ChartDefinitionBase {
   };
 }
 
+//@ts-ignore
 const visualDefinition: InsightDefinition<MyChartDefinition> = {
   info: {
     id: "${kebabCaseDirectory}",

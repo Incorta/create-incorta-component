@@ -11,6 +11,7 @@ export const ${pascalCaseName} = ({ text }: { text: string }) => {
     <div className="test">
       <h1>Hello Incorta Visual</h1>
       <p>${description}</p>
+      <p>{text}</p>
     </div>
   );
 };

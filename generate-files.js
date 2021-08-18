@@ -58,6 +58,7 @@ async function generateFiles(directory, options) {
 }
 
 const successMessage = (directory) => `
+
         ${chalk.gray.underline("files created successfully 🎉🎉🎉")}
 
         ${chalk.black("Go to your project directory:")}
