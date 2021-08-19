@@ -34,14 +34,10 @@ const runDevServer = async () => {
     const io = socket(server);
 
     io.on("connection", function (socket) {
-      const files = [
-        join(distPath, "bundle.css"),
-        join(distPath, "bundle.modern.js"),
-      ];
-
-      const watcher = chokidar.watch(files, {
+      const bundleJsFilePath = join(distPath, "bundle.modern.js");
+      const watcher = chokidar.watch(bundleJsFilePath, {
         persistent: true,
-        interval: 1000,
+        interval: 4000,
       });
 
       watcher.on("change", (path) => {
