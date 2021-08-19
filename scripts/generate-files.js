@@ -20,13 +20,11 @@ const createPackageJSON = async ({ options, newVisualPath }) => {
       spaces: 2,
     }
   );
-  console.log(chalk.gray("package.json generated"));
 };
 
 const createVisualizationIndexFile = async ({ options, newVisualPath }) => {
   const indexPath = join(newVisualPath, "src", "index.tsx");
   await fse.writeFile(indexPath, visualizationIndexGenerator(options));
-  console.log(chalk.gray("index.tsx file created"));
 };
 
 const createVisualizationDefinitionFile = async ({
@@ -35,7 +33,6 @@ const createVisualizationDefinitionFile = async ({
 }) => {
   const defPath = join(newVisualPath, "src", "definition.ts");
   await fse.writeFile(defPath, chartDefinitionGenerator(options));
-  console.log(chalk.gray("definition.ts file created"));
 };
 
 async function generateFiles(directory, options) {
@@ -65,12 +62,12 @@ async function generateFiles(directory, options) {
     console.log(chalk.grey("Installing dependencies..."));
     if (options.useYarn) {
       await execa("yarn", {
-        // stdio: "inherit",
+        stdio: "inherit",
         cwd: newVisualPath,
       });
     } else {
       await execa("npm", ["install"], {
-        // stdio: "inherit",
+        stdio: "inherit",
         cwd: newVisualPath,
       });
     }
@@ -92,7 +89,7 @@ const successMessage = (directory) => `
 
         ${chalk.black("Start your dev server by running:")}
 
-        ${chalk.cyan("npx create-incorta-visual dev")}
+        ${chalk.cyan("npx create-incorta-visual start")}
 
         ${chalk.black("or package you visualization by running:")}
 

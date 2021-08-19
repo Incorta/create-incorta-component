@@ -43,7 +43,6 @@ const createBuildPackage = async () => {
     }
 
     //Compress Bundle
-    console.log(chalk.gray("Compress start"));
     const outputPath = join(distPath, "bundle.zip");
     await zipDirectory(distPath, outputPath);
 
@@ -55,8 +54,11 @@ const createBuildPackage = async () => {
     // Remove extra files in dist folder
     await removeExtraDistFiles(distPath);
     console.log(
-      chalk.black(`${chalk.cyan("dist/bundle.inc")} created sucessfully `) +
-        chalk.green("✅")
+      chalk.black(
+        `${chalk.green("✅ ")} Your bundle is ready at ${chalk.cyan(
+          "dist/bundle.inc"
+        )} `
+      )
     );
   } catch (e) {
     console.log(e);
