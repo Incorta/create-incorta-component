@@ -1,5 +1,5 @@
 {
-  "name": "create-incorta-visual-1",
+  "name": "create-incorta-visual-test",
   "version": "0.0.1",
   "description": "Generate a new Incorta visualization",
   "main": "index.js",

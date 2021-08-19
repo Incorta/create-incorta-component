@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: '10.x'
           registry-url: 'https://registry.npmjs.org'
+          scope: '@incorta-org'
       - run: npm install
       # Publish to npm
       - run: npm publish --access public
