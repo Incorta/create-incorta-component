@@ -1,5 +1,5 @@
 {
-  "name": "@incorta-org/create-incorta-visual",
+  "name": "create-incorta-visual",
   "version": "0.0.1",
   "description": "Generate a new Incorta visualization",
   "main": "index.js",
