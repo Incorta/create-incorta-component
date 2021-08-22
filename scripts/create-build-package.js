@@ -54,7 +54,7 @@ const createBuildPackage = async () => {
     // Remove extra files in dist folder
     await removeExtraDistFiles(distPath);
     console.log(
-      chalk.black(
+      chalk(
         `${chalk.green("✅ ")} Your bundle is ready at ${chalk.cyan(
           "dist/bundle.inc"
         )} `

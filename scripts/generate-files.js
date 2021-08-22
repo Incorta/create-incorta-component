@@ -83,15 +83,15 @@ const successMessage = (directory) => `
 
         ${chalk.gray.underline("Files created successfully 🎉🎉🎉")}
 
-        ${chalk.black("Go to your project directory:")}
+        ${chalk("Go to your project directory:")}
 
         ${chalk.cyan(`cd ${directory}`)}
 
-        ${chalk.black("Start your dev server by running:")}
+        ${chalk("Start your dev server by running:")}
 
         ${chalk.cyan("npx create-incorta-visual start")}
 
-        ${chalk.black("or package your visualization by running:")}
+        ${chalk("or package your visualization by running:")}
 
         ${chalk.cyan("npx create-incorta-visual package")}
         
