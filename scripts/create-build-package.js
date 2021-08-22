@@ -39,7 +39,7 @@ const createBuildPackage = async () => {
     if (shouldUseYarn) {
       await execa("yarn", ["build"]);
     } else {
-      await execa("yarn", ["run", "build"]);
+      await execa("npm", ["run", "build"]);
     }
 
     //Compress Bundle
