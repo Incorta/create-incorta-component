@@ -10,8 +10,11 @@ const checkBeforeInit = require("../utils/check-requirements");
 
 const createIncortaVisual = new Command("create-incorta-visual");
 
+const packageJson = require("../package.json");
+
 createIncortaVisual
   .arguments("[directory]")
+  .version(packageJson.version)
   .description("Create a new application")
   .action((directory) => {
     checkBeforeInit();
