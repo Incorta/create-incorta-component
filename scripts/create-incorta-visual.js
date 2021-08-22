@@ -15,7 +15,7 @@ const packageJson = require("../package.json");
 createIncortaVisual
   .arguments("[directory]")
   .version(packageJson.version)
-  .description("Create a new application")
+  .description("Create a new Incorta visual")
   .action((directory) => {
     checkBeforeInit();
     initProject(directory, createIncortaVisual);
@@ -23,14 +23,14 @@ createIncortaVisual
 
 createIncortaVisual
   .command("start")
-  .description("Open development server")
+  .description("Start development server")
   .action(() => {
     runDevServer();
   });
 
 createIncortaVisual
   .command("package")
-  .description("Build visualization")
+  .description("Build visualization and generate bundle.inc file")
   .action(() => {
     createBuildPackage();
   });
