@@ -89,11 +89,11 @@ const successMessage = (directory) => `
 
         ${chalk("Start your dev server by running:")}
 
-        ${chalk.cyan("npx create-incorta-visual start")}
+        ${chalk.cyan("create-incorta-visual start")}
 
         ${chalk("or package your visualization by running:")}
 
-        ${chalk.cyan("npx create-incorta-visual package")}
+        ${chalk.cyan("create-incorta-visual package")}
         
 `;
 
