@@ -6,10 +6,15 @@ This package include the `create-incorta-visual` CLI to make the creation of cus
 ## How to use
 ----------
 
-Using yarn create command
+Install the package:
 
-`yarn create create-incorta-visual my-viz`
+`npm install -g @incorta-org/create-incorta-visual`
 
-Using npx
+or
 
-`npx create-incorta-visual my-viz`
+`yarn global add @incorta-org/create-incorta-visual`
+
+
+You can create a new visualization by runnnig: 
+
+`create-incorta-visual my-incotra-visual`
