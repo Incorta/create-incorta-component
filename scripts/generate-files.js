@@ -91,7 +91,7 @@ const successMessage = (directory) => `
 
         ${chalk.cyan("npx create-incorta-visual start")}
 
-        ${chalk.black("or package you visualization by running:")}
+        ${chalk.black("or package your visualization by running:")}
 
         ${chalk.cyan("npx create-incorta-visual package")}
         
