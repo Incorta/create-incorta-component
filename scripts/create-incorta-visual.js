@@ -4,7 +4,7 @@ const { Command } = require("commander");
 
 const initProject = require("./init-project");
 const createBuildPackage = require("./create-build-package");
-const runDevServer = require("./runDevServer");
+const runDevServer = require("./run-dev-server");
 
 const checkBeforeInit = require("../utils/check-requirements");
 
