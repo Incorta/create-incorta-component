@@ -14,9 +14,8 @@ module.exports = (opts) => {
       node: ">=10",
     },
     scripts: {
-      bundle: "node ./scripts/bundle.js",
-      build: "yarn run bundle --no-sourcemap --no-generateTypes",
-      start: "yarn run bundle watch --no-compress",
+      build: "create-incorta-visual package",
+      start: "create-incorta-visual start",
       test: "run-s test:unit test:lint test:build",
       "test:build": "run-s build",
       "test:lint": "eslint .",

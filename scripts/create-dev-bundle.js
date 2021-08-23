@@ -1,9 +1,7 @@
 const { join, resolve } = require("path");
-const replace = require("replace-in-file");
-const fs = require("fs-extra");
 const { spawn } = require("child_process");
 
-const createDevBundle = () => {
+const createDevBundle = async () => {
   const visualizationPath = process.cwd();
   const createIncortaVisualRootPath = resolve(__dirname, "..");
 
@@ -14,7 +12,7 @@ const createDevBundle = () => {
 
   const distPath = join(visualizationPath, "dist");
 
-  spawn(
+  const test = await spawn(
     "node",
     [
       microBundleScriptPath,
@@ -33,39 +31,7 @@ const createDevBundle = () => {
     { stdio: "inherit", env: process.env }
   );
 
-  // TODO: After each build I should do this replace
-  replace.sync({
-    files: resolve(visualizationPath, "./dist/bundle.modern.js"),
-    from: /import\*as (.) from"react";/g,
-    to: (match, group) => {
-      return `const ${group} = window.React;`;
-    },
-  });
-
-  replace.sync({
-    files: resolve(visualizationPath, "./dist/bundle.modern.js"),
-    from: /import\*as (.) from"react-dom";/g,
-    to: (match, group) => {
-      return `const ${group} = window.ReactDom;`;
-    },
-  });
-
-  replace.sync({
-    files: resolve(visualizationPath, "./dist/bundle.modern.js"),
-    from: /import (.) from"(.*\.(png|svg))"/g,
-    to: (match, group1, group2) => {
-      console.log(args);
-      const base64 = fs.readFileSync(
-        resolve(visualizationPath, group2),
-        "base64"
-      );
-      if (group2.indexOf(".png") > -1) {
-        return `const ${group1} = "data:image/png;base64,${base64}";`;
-      } else {
-        return `const ${group1} = "data:image/svg+xml,${base64}";`;
-      }
-    },
-  });
+  // This outputs bundle.modern.js
 };
 
 module.exports = createDevBundle;
