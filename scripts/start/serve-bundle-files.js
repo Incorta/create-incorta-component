@@ -3,7 +3,7 @@ const express = require("express");
 const chalk = require("chalk");
 const socket = require("socket.io");
 const cors = require("cors");
-const createWatcher = require("../utils/createWatcher");
+const createWatcher = require("../../utils/create-watcher");
 
 const serveBundleFiles = () => {
   console.log(chalk.gray("Starting dev server"));
@@ -26,10 +26,9 @@ const serveBundleFiles = () => {
   const io = socket(server);
   io.on("connection", function (socket) {
     watcher.on("change", (path) => {
-      console.log("Files sent to Client", path);
+      console.log("Updated");
       io.emit("update", { message: "file updated" + path });
     });
-    console.log("Made socket connection");
   });
 };
 

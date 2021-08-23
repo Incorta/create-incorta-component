@@ -1,12 +1,12 @@
 const fs = require("fs-extra");
-const createWatcher = require("../utils/createWatcher");
+const createWatcher = require("../../utils/create-watcher");
 const { join } = require("path");
-const { MICROBUNDLE_FILE } = require("../utils/const");
+const { MICROBUNDLE_FILE } = require("../../utils/const");
 const {
   createBundleTempFile,
   replaceInFiles,
   createBundleServedFile,
-} = require("../utils/dist-utils");
+} = require("../../utils/dist-utils");
 
 /*
     bundle.modern.js => created by microbundle

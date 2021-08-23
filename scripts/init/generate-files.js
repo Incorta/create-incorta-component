@@ -3,9 +3,9 @@ const fse = require("fs-extra");
 const { join, resolve } = require("path");
 const execa = require("execa");
 
-const visualizationPackageJsonGenerator = require("../resources/templates/package.json.js");
-const visualizationIndexGenerator = require("../resources/templates/index.tsx.js");
-const chartDefinitionGenerator = require("../resources/templates/definition.ts.js");
+const visualizationPackageJsonGenerator = require("../../resources/templates/package.json.js");
+const visualizationIndexGenerator = require("../../resources/templates/index.tsx.js");
+const chartDefinitionGenerator = require("../../resources/templates/definition.ts.js");
 
 const createPackageJSON = async ({ options, newVisualPath }) => {
   const { directory, author, description } = options;
@@ -40,7 +40,7 @@ async function generateFiles(directory, options) {
   const currentProcessDir = process.cwd();
 
   // Root path of create-incorta-visual
-  const packageRootPath = resolve(__dirname, "..");
+  const packageRootPath = resolve(__dirname, "../..");
 
   // new Visual Path
   const newVisualPath = join(currentProcessDir, directory);
