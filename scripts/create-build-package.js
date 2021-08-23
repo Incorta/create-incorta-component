@@ -12,7 +12,7 @@ const {
 } = require("../utils/dist-utils");
 
 const zipDirectory = (source, out) => {
-  const bundleJs = join(source, "bundle.modern.js");
+  const bundleJs = join(source, "bundle.js");
   const bundleCss = join(source, "bundle.css");
 
   const archive = archiver("zip", { zlib: { level: 9 } });

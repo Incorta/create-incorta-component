@@ -91,10 +91,19 @@ const replaceInFiles = async (arg) => {
 };
 
 const removeDistFiles = async (distPath) => {
-  await fs.rm(join(distPath, "src"), { recursive: true }, (e) => {});
+  const hasBundleFolder = fs.existsSync(join(distPath, "bundle"));
+  const hasSrcFolder = fs.existsSync(join(distPath, "src"));
+
+  if (hasBundleFolder) {
+    await fs.rm(join(distPath, "bundle"), { recursive: true }, (e) => {});
+  }
+  if (hasSrcFolder) {
+    await fs.rm(join(distPath, "src"), { recursive: true }, (e) => {});
+  }
+
   fs.readdir(distPath, (err, files) => {
     if (err) console.err(err);
-    const filesPaths = ["bundle.inc", "src"];
+    const filesPaths = ["bundle.inc", "src", "bundle"];
     files.forEach((file) => {
       if (!filesPaths.includes(file)) {
         fs.unlinkSync(join(distPath, file));
