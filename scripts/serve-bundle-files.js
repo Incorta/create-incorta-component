@@ -10,8 +10,7 @@ const serveBundleFiles = () => {
   const currentProcessDir = process.cwd();
   const distPath = join(currentProcessDir, "dist");
 
-  // App setup
-  const watcher = createWatcher("bundle.modern.js");
+  const watcher = createWatcher("bundle.js");
   const PORT = 8000;
   const app = express();
   var corsOptions = {
@@ -27,7 +26,7 @@ const serveBundleFiles = () => {
   const io = socket(server);
   io.on("connection", function (socket) {
     watcher.on("change", (path) => {
-      console.log("Files sent to Client");
+      console.log("Files sent to Client", path);
       io.emit("update", { message: "file updated" + path });
     });
     console.log("Made socket connection");

@@ -12,7 +12,7 @@ const createDevBundle = async () => {
 
   const distPath = join(visualizationPath, "dist");
 
-  const test = await spawn(
+  await spawn(
     "node",
     [
       microBundleScriptPath,
