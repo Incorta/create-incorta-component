@@ -1,12 +1,17 @@
 const execa = require("execa");
-const fs = require("fs");
+const fs = require("fs-extra");
 const archiver = require("archiver");
-const { join } = require("path");
+const { join, resolve } = require("path");
 const chalk = require("chalk");
 
-const { shouldUseYarn: shouldUseYarnCheck } = require("../utils/has-yarn");
+const {
+  replaceInFiles,
+  createBundleServedFile,
+  createBundleTempFile,
+  removeDistFiles,
+} = require("../utils/dist-utils");
 
-function zipDirectory(source, out) {
+const zipDirectory = (source, out) => {
   const bundleJs = join(source, "bundle.modern.js");
   const bundleCss = join(source, "bundle.css");
 
@@ -27,20 +32,38 @@ function zipDirectory(source, out) {
     stream.on("close", () => resolve());
     archive.finalize();
   });
-}
+};
 
 const createBuildPackage = async () => {
   const currentProcessDir = process.cwd();
   try {
-    const distPath = join(currentProcessDir, "dist");
-    const shouldUseYarn = shouldUseYarnCheck(currentProcessDir);
-
     console.log(chalk.gray("Building bundle..."));
-    if (shouldUseYarn) {
-      await execa("yarn", ["build"]);
-    } else {
-      await execa("npm", ["run", "build"]);
-    }
+
+    const distPath = join(currentProcessDir, "dist");
+    const createIncortaVisualRootPath = resolve(__dirname, "..");
+    const microBundleScriptPath = join(
+      createIncortaVisualRootPath,
+      "./node_modules/microbundle/dist/cli.js"
+    );
+
+    await execa("node", [
+      microBundleScriptPath,
+      "-o",
+      join(distPath, "bundle.js"),
+      "--jsx",
+      "React.createElement",
+      "--external",
+      ".*/assets/.*,.*\\\\assets\\\\.*",
+      "--jsxImportSource",
+      "-f",
+      "esm",
+      "--no-sourcemap",
+      "--no-generateTypes",
+    ]);
+
+    await createBundleTempFile();
+    await replaceInFiles({ isBuild: true });
+    await createBundleServedFile();
 
     //Compress Bundle
     const outputPath = join(distPath, "bundle.zip");
@@ -52,7 +75,7 @@ const createBuildPackage = async () => {
     }
 
     // Remove extra files in dist folder
-    await removeExtraDistFiles(distPath);
+    await removeDistFiles(distPath);
     console.log(
       chalk(
         `${chalk.green("✅ ")} Your bundle is ready at ${chalk.cyan(
@@ -63,12 +86,6 @@ const createBuildPackage = async () => {
   } catch (e) {
     console.log(e);
   }
-};
-
-const removeExtraDistFiles = async (distPath) => {
-  fs.unlinkSync(join(distPath, "bundle.css"));
-  fs.unlinkSync(join(distPath, "bundle.modern.js"));
-  await fs.rm(join(distPath, "src"), { recursive: true }, (e) => {});
 };
 
 module.exports = createBuildPackage;
