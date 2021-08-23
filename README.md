@@ -4,7 +4,6 @@ This package include the `create-incorta-visual` CLI to make the creation of cus
 
 
 ## How to use
-----------
 
 Install the package:
 
@@ -13,7 +12,6 @@ Install the package:
 or
 
 `yarn global add @incorta-org/create-incorta-visual`
-
 
 You can create a new visualization by runnnig: 
 
