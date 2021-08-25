@@ -10,7 +10,6 @@ const {
   removeDistFiles,
 } = require("../../utils/dist-utils");
 const compressDirectory = require("../../utils/compress-directory");
-const { shouldUseYarn } = require("../../utils/has-yarn");
 
 const createBuildPackage = async () => {
   const currentProcessDir = process.cwd();
@@ -19,12 +18,9 @@ const createBuildPackage = async () => {
     const distPath = join(currentProcessDir, "dist");
     const createIncortaVisualRootPath = resolve(__dirname, "../..");
 
-    const useYarn = await shouldUseYarn(currentProcessDir);
     const microBundleScriptPath = join(
       createIncortaVisualRootPath,
-      useYarn
-        ? "./node_modules/microbundle/.bin/microbundle.js"
-        : "./node_modules/microbundle/dist/cli.js"
+      "./node_modules/microbundle/dist/cli.js"
     );
 
     await execa("node", [
