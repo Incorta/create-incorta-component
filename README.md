@@ -15,4 +15,4 @@ or
 
 You can create a new visualization by runnnig: 
 
-`create-incorta-visual my-incotra-visual`
+`create-incorta-visual my-incorta-visual`
