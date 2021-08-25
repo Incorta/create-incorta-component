@@ -1,13 +1,17 @@
 const { join, resolve } = require("path");
 const { spawn } = require("child_process");
+const { shouldUseYarn } = require("../../utils/has-yarn");
 
 const createDevBundle = async () => {
   const visualizationPath = process.cwd();
   const createIncortaVisualRootPath = resolve(__dirname, "../..");
 
+  const useYarn = await shouldUseYarn(currentProcessDir);
   const microBundleScriptPath = join(
     createIncortaVisualRootPath,
-    "./node_modules/microbundle/dist/cli.js"
+    useYarn
+      ? "./node_modules/microbundle/.bin/microbundle.js"
+      : "./node_modules/microbundle/dist/cli.js"
   );
 
   const distPath = join(visualizationPath, "dist");
