@@ -1,5 +1,5 @@
 const packageJSON = require('../../package.json');
-const { v5: uuid } = require('uuid');
+const { v4: uuid } = require('uuid');
 
 module.exports = opts => {
   const { directory: name, description, author, useYarn } = opts;
@@ -63,12 +63,12 @@ module.exports = opts => {
       'react-dom': '^17.0.2',
       'react-scripts': '^3.4.1',
       'replace-in-file': '^6.2.0',
-      typescript: useYarn ? '^4.3.5' : '^3.2.1', //TODO: Discuss with Riyad
+      typescript: '^4.3.5',
       '@incorta-org/create-incorta-visual': packageJSON.version
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/visual-sdk': '^0.1.1'
+      '@incorta-org/visual-sdk': '^0.1.2-alpha-1'
     }
   };
 };

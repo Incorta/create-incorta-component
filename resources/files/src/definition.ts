@@ -1,10 +1,6 @@
-import {
-  ChartDefinitionBase,
-  InsightDefinition,
-  QueryRole,
-} from "@incorta-org/visual-sdk";
-import icon from "./../assets/icon.png";
-import enUS from "../locales/en-US.json";
+import { ChartDefinitionBase, InsightDefinition, QueryRole } from '@incorta-org/visual-sdk';
+import icon from './../assets/icon.png';
+import enUS from '../locales/en-US.json';
 
 interface MyChartDefinition extends ChartDefinitionBase {
   settings: {
@@ -19,53 +15,45 @@ interface MyChartDefinition extends ChartDefinitionBase {
 
 const visualDefinition: InsightDefinition<MyChartDefinition> = {
   info: {
-    id: "my-chart",
-    version: "0.1",
-    name: "my chart",
-    hint: "my chart hint",
-    author: "incorta",
     icon,
     locale: {
-      "en-US": enUS,
-    },
-    isGraph: false,
-    supportEngineQuery: true,
-    queryDetailedValues: () => true,
+      'en-US': enUS
+    }
   },
   settings: [
     {
-      name: "settings",
+      name: 'settings',
       settings: [
         {
-          metaKey: "autoRefresh",
-          name: { key: "common.settings.autoRefresh" },
-          datatype: "boolean",
-        },
-      ],
-    },
+          metaKey: 'autoRefresh',
+          name: { key: 'common.settings.autoRefresh' },
+          datatype: 'boolean'
+        }
+      ]
+    }
   ],
   bindingsTrays: [
     {
-      metaKey: "measure",
+      metaKey: 'measure',
       queryRole: QueryRole.measure,
-      name: "measure",
-      placeholder: "sortPlaceholder",
+      name: 'measure',
+      placeholder: 'sortPlaceholder',
       bindingSettings: [
         {
-          name: "setting1",
+          name: 'setting1',
           settings: [
             {
-              metaKey: "color",
-              name: "color",
-              datatype: "string",
-              uiControlKey: "color-picker",
-              affectsData: false,
-            },
-          ],
-        },
-      ],
-    },
-  ],
+              metaKey: 'color',
+              name: 'color',
+              datatype: 'string',
+              uiControlKey: 'color-picker',
+              affectsData: false
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };
 
 export default visualDefinition;
