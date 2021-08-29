@@ -1,11 +1,6 @@
-const { kebabCase } = require("lodash");
+const { kebabCase } = require('lodash');
 
-const generatedTemplate = ({
-  directory,
-  version = "0.0.1",
-  description,
-  author,
-}) => {
+const generatedTemplate = ({ directory, version = '0.0.1', description, author }) => {
   const kebabCaseDirectory = kebabCase(directory);
   return `import {
   ChartDefinitionBase,
@@ -29,18 +24,10 @@ interface MyChartDefinition extends ChartDefinitionBase {
 //@ts-ignore
 const visualDefinition: InsightDefinition<MyChartDefinition> = {
   info: {
-    id: "${kebabCaseDirectory}",
-    version: "${version}",
-    name: "${directory}",
     hint: "${description}",
-    author: "${author}",
-    icon,
     locale: {
       "en-US": enUS,
     },
-    isGraph: false,
-    supportEngineQuery: true,
-    queryDetailedValues: () => true,
   },
   settings: [
     {
@@ -82,7 +69,7 @@ export default visualDefinition;
 `;
 };
 
-const chartDefinitionGenerator = (options) => {
+const chartDefinitionGenerator = options => {
   return generatedTemplate(options);
 };
 
