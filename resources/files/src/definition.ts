@@ -27,7 +27,8 @@ const visualDefinition: InsightDefinition<MyChartDefinition> = {
         {
           metaKey: 'autoRefresh',
           name: { key: 'common.settings.autoRefresh' },
-          datatype: 'boolean'
+          datatype: 'boolean',
+          defaultValue: true
         }
       ]
     }
