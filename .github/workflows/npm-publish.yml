@@ -22,6 +22,6 @@ jobs:
           scope: '@incorta-org'
       - run: npm install
       # Publish to npm
-      - run: npm publish --access public --tag next
+      - run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
