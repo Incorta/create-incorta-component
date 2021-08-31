@@ -1,8 +1,11 @@
 # This workflow will do publish to npm registry
 name: Node.js Package
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+#   release:
+#     types: [created]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,6 +22,6 @@ jobs:
           scope: '@incorta-org'
       - run: npm install
       # Publish to npm
-      - run: npm publish --access public
+      - run: npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
