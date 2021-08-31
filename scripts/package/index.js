@@ -7,7 +7,8 @@ const {
   replaceInFiles,
   createBundleServedFile,
   createBundleTempFile,
-  removeDistFiles
+  removeDistFiles,
+  addPackageJSONToBundle
 } = require('../../utils/dist-utils');
 const compressDirectory = require('../../utils/compress-directory');
 
@@ -41,6 +42,7 @@ const createBuildPackage = async () => {
     await createBundleTempFile();
     await replaceInFiles({ isBuild: true });
     await createBundleServedFile();
+    await addPackageJSONToBundle();
 
     //Compress Bundle
     const outputPath = join(distPath, 'bundle.zip');

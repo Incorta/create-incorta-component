@@ -13,12 +13,11 @@ const serveBundleFiles = () => {
   const watcher = createWatcher('bundle.js');
   const PORT = 8000;
   const app = express();
-  var corsOptions = {
+  const corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   };
   app.use(cors(corsOptions));
-  console.log('with cors');
   const server = app.listen(PORT, function () {
     console.log(`Listening on port ${PORT}`);
     console.log(`http://localhost:${PORT}`);
@@ -29,15 +28,12 @@ const serveBundleFiles = () => {
       origin: '*'
     }
   });
-  io.on('connection', function (socket) {
-    console.log('connection');
-    watcher.on('change', path => {
-      console.log('update');
-      socket.emit('update');
-    });
+  watcher.on('change', path => {
+    io.emit('update');
   });
+  io.on('connection', function (socket) {});
   io.on('disconnect', () => {
-    watcher.off('change');
+    watcher.close();
   });
 };
 

@@ -2,7 +2,7 @@
   "name": "@incorta-org/create-incorta-visual",
   "description": "Generate a new Incorta visualization",
   "main": "index.js",
-  "version": "0.0.5-alpha.1",
+  "version": "0.0.5-alpha.2",
   "repository": "git@github.com:Incorta/create-incorta-visual.git",
   "license": "MIT",
   "private": false,
@@ -21,6 +21,9 @@
     "replace-in-file": "^6.2.0",
     "socket.io": "^4.1.3",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.2"
   },
   "bin": {
     "create-incorta-visual": "./index.js"

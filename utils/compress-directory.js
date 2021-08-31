@@ -5,6 +5,7 @@ const { join } = require('path');
 const compressDirectory = (source, out) => {
   const bundleJs = join(source, 'bundle.js');
   const bundleCss = join(source, 'bundle.css');
+  const packageJSON = join(source, 'package.json');
 
   const archive = archiver('zip', { zlib: { level: 9 } });
   const stream = fs.createWriteStream(out);
@@ -13,6 +14,9 @@ const compressDirectory = (source, out) => {
     archive
       .append(fs.createReadStream(bundleJs), {
         name: 'bundle.js'
+      })
+      .append(fs.createReadStream(packageJSON), {
+        name: 'package.json'
       })
       .append(fs.createReadStream(bundleCss), {
         name: 'bundle.css'
