@@ -1,14 +1,25 @@
-const createDevBundle = require('./create-dev-bundle');
 const serveBundleFiles = require('./serve-bundle-files');
-const replaceBundleFiles = require('./replace-bundle-files');
-const { addPackageJSONToBundle } = require('../../utils/dist-utils');
+const { bundle } = require('../../utils/dist-utils');
+const chokidar = require('chokidar');
+const { join } = require('path');
 
 const runDevServer = async () => {
   try {
-    await createDevBundle(); // continuously creating bundle.modern.js
-    await replaceBundleFiles(); // watch on bundle.modern.js and create bundle.js
-    await addPackageJSONToBundle();
-    serveBundleFiles(); // watch on bundle.js to update the client
+    const currentProcessDir = process.cwd();
+    await bundle({ currentProcessDir, package: false });
+    serveBundleFiles({ currentProcessDir }); // watch on bundle.js to update the client
+    const watcher = chokidar.watch(
+      [join(currentProcessDir, 'src'), join(currentProcessDir, 'package.json')],
+      {
+        persistent: true,
+        awaitWriteFinish: true,
+        disableGlobbing: true,
+        ignoreInitial: true
+      }
+    );
+    watcher.on('change', path => {
+      bundle({ currentProcessDir, package: false });
+    });
   } catch (e) {
     console.log(e);
   }

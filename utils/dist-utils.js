@@ -1,52 +1,35 @@
-const { join, resolve } = require('path');
 const replace = require('replace-in-file');
 const fs = require('fs-extra');
+const execa = require('execa');
+const { join, resolve } = require('path');
+const chalk = require('chalk');
+const rimraf = require('rimraf');
+const archiver = require('archiver');
 
-const { MICROBUNDLE_FILE, TEMP_FILE, SERVED_FILE, PACKAGE_JSON_FILE } = require('./const');
+/**
+ * @param {String} source
+ * @param {String} out
+ * @returns {Promise}
+ */
+function zipDirectory(source, out) {
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  const stream = fs.createWriteStream(out);
 
-const createBundleTempFile = async () => {
-  const visualizationPath = process.cwd();
-  await fs.copy(
-    join(visualizationPath, 'dist', MICROBUNDLE_FILE),
-    join(visualizationPath, 'dist', TEMP_FILE)
-  );
-};
+  return new Promise((resolve, reject) => {
+    archive
+      .directory(source, false)
+      .on('error', err => reject(err))
+      .pipe(stream);
 
-const createBundleServedFile = async () => {
-  const visualizationPath = process.cwd();
-  await fs.copy(
-    join(visualizationPath, 'dist', TEMP_FILE),
-    join(visualizationPath, 'dist', SERVED_FILE)
-  );
-};
+    stream.on('close', () => resolve());
+    archive.finalize();
+  });
+}
 
-const addPackageJSONToBundle = async () => {
-  const visualizationPath = process.cwd();
-  await fs.copy(
-    join(visualizationPath, PACKAGE_JSON_FILE),
-    join(visualizationPath, 'dist', PACKAGE_JSON_FILE)
-  );
-};
+let renderBundle;
+let definitionBundle;
 
-const getRegex = (type, { isBuild }) => {
-  const buildRegex = {
-    react: /import\*as(.+)from"react";/g,
-    reactDom: /import\*as(.+)from('|")react-dom('|");/g,
-    images: /import (.) from"(.*\.(png|svg))";/g
-  };
-
-  const devRegex = {
-    react: /import \* as (.+) from 'react';/g,
-    reactDom: /import \* as (.+) from 'react-dom';/g,
-    images: /import(.+)from '(.*\.(png|svg))';/g
-  };
-
-  if (isBuild) return buildRegex[type];
-  return devRegex[type];
-};
-
-const replaceInFiles = async arg => {
-  const isBuild = !!arg?.isBuild;
+const fixImport = async path => {
   const visualizationPath = process.cwd();
   const errorPrint = error => {
     if (error) {
@@ -56,8 +39,8 @@ const replaceInFiles = async arg => {
 
   await replace(
     {
-      files: resolve(visualizationPath, `./dist/${TEMP_FILE}`),
-      from: getRegex('react', { isBuild }),
+      files: resolve(path),
+      from: [/import\*as(.+)from"react";/g, /import \* as (.+) from 'react';/g],
       to: (match, group) => {
         return `const ${group} = window.React;`;
       }
@@ -67,8 +50,8 @@ const replaceInFiles = async arg => {
 
   await replace(
     {
-      files: resolve(visualizationPath, `./dist/${TEMP_FILE}`),
-      from: getRegex('reactDom', { isBuild }),
+      files: resolve(path),
+      from: [/import\*as(.+)from('|")react-dom('|");/g, /import \* as (.+) from 'react-dom';/g],
       to: (match, group) => {
         return `const ${group} = window.ReactDom;`;
       }
@@ -78,8 +61,8 @@ const replaceInFiles = async arg => {
 
   await replace(
     {
-      files: resolve(visualizationPath, `./dist/${TEMP_FILE}`),
-      from: getRegex('images', { isBuild }),
+      files: resolve(path),
+      from: [/import (.) from"(.*\.(png|svg))";/g, /import(.+)from '(.*\.(png|svg))';/g],
       to: (match, group1, group2) => {
         const paths = group2.split('/');
         const name = paths[paths.length - 1];
@@ -95,32 +78,83 @@ const replaceInFiles = async arg => {
   );
 };
 
-const removeDistFiles = async distPath => {
-  const hasBundleFolder = fs.existsSync(join(distPath, 'bundle'));
-  const hasSrcFolder = fs.existsSync(join(distPath, 'src'));
+const bundle = async ({ currentProcessDir, package = false }) => {
+  try {
+    console.log(chalk.gray('Building bundle...'));
 
-  if (hasBundleFolder) {
-    await fs.rm(join(distPath, 'bundle'), { recursive: true }, e => {});
-  }
-  if (hasSrcFolder) {
-    await fs.rm(join(distPath, 'src'), { recursive: true }, e => {});
-  }
+    definitionBundle?.cancel?.();
+    renderBundle?.cancel?.();
 
-  fs.readdir(distPath, (err, files) => {
-    if (err) console.err(err);
-    const filesPaths = ['bundle.inc', 'src', 'bundle'];
-    files.forEach(file => {
-      if (!filesPaths.includes(file)) {
-        fs.unlinkSync(join(distPath, file));
-      }
-    });
-  });
+    const srcPath = join(currentProcessDir, 'src');
+    const tempPath = join(currentProcessDir, `.civ_temp`);
+    const distPath = join(currentProcessDir, 'dist');
+    const distContentPath = join(distPath, 'content');
+    const createIncortaVisualRootPath = resolve(__dirname, '..');
+
+    const microBundleScriptPath = join(
+      createIncortaVisualRootPath,
+      './node_modules/microbundle/dist/cli.js'
+    );
+
+    const getMicroBundleParams = (inputPath, outputPath) => [
+      '-i',
+      join(srcPath, inputPath),
+      '-o',
+      join(tempPath, outputPath),
+      '--jsx',
+      'React.createElement',
+      '--external',
+      '.*/assets/.*,.*\\\\assets\\\\.*',
+      '--jsxImportSource',
+      '-f',
+      'esm',
+      ...(package ? ['--no-sourcemap', '--no-generateTypes'] : ['--no-compress'])
+    ];
+
+    renderBundle = execa('node', [
+      microBundleScriptPath,
+      ...getMicroBundleParams('index.tsx', 'render.js')
+    ]);
+    definitionBundle = execa('node', [
+      microBundleScriptPath,
+      ...getMicroBundleParams('definition.ts', 'definition.js')
+    ]);
+
+    try {
+      await renderBundle;
+      await definitionBundle;
+    } catch (error) {
+      //Remove temp folder
+      rimraf.sync(tempPath, { recursive: true });
+      return;
+    }
+
+    //Fix react&react-dom imports
+    await fixImport(join(tempPath, 'render.modern.js'));
+    //Fix image import (Convert image path to base64)
+    await fixImport(join(tempPath, 'definition.modern.js'));
+
+    await fs.copy(join(tempPath, 'render.modern.js'), join(distContentPath, 'render.js'));
+    await fs.copy(join(tempPath, 'definition.modern.js'), join(distContentPath, 'definition.js'));
+    await fs.copy(join(tempPath, 'render.css'), join(distContentPath, 'render.css'));
+    await fs.copy(join(currentProcessDir, 'package.json'), join(distContentPath, 'package.json'));
+
+    //Remove temp folder
+    rimraf.sync(tempPath, { recursive: true });
+
+    //Compress Bundle
+    if (package) {
+      console.log(chalk.gray('Compressing bundle...'));
+      await zipDirectory(distContentPath, join(distPath, 'bundle.inc'));
+      console.log(
+        chalk(`${chalk.green('✅ ')} Your bundle is ready at ${chalk.cyan('dist/bundle.inc')} `)
+      );
+    } else {
+      console.log(chalk(`${chalk.green('✅ Done')}`));
+    }
+  } catch (e) {}
 };
 
 module.exports = {
-  createBundleTempFile,
-  createBundleServedFile,
-  replaceInFiles,
-  removeDistFiles,
-  addPackageJSONToBundle
+  bundle
 };

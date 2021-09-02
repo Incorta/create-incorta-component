@@ -15,7 +15,7 @@ export const ${pascalCaseName} = ({ text }: { text: string }) => {
   );
 };
 
-export { default as visualDefinition } from './definition';
+export default ${pascalCaseName};
 `;
 };
 

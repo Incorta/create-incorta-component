@@ -38,7 +38,7 @@ const visualDefinition: InsightDefinition<MyChartDefinition> = {
       metaKey: 'measure',
       queryRole: QueryRole.measure,
       name: 'measure',
-      placeholder: 'sortPlaceholder',
+      minCount: 1,
       bindingSettings: [
         {
           name: 'setting1',
