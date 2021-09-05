@@ -124,6 +124,7 @@ const bundle = async ({ currentProcessDir, package = false }) => {
       await renderBundle;
       await definitionBundle;
     } catch (error) {
+      console.error(error);
       //Remove temp folder
       rimraf.sync(tempPath, { recursive: true });
       return;
