@@ -1,16 +1,19 @@
 const { camelCase, startCase } = require('lodash');
 
-const visualizationIndexGenerator = ({ directory, description }) => {
+const visualizationIndexGenerator = ({ directory }) => {
   const pascalCaseName = startCase(camelCase(directory)).replace(/ /g, '');
   return `import * as React from 'react';
+import { VisualProps } from '@incorta-org/visual-sdk';
 import './styles.less';
 
-export const ${pascalCaseName} = ({ text }: { text: string }) => {
+const ${pascalCaseName} = (props: VisualProps) => {
+  const { context, data } = props.insight;
+  console.log('dimension', props.dimension);
+  console.log('context', context);
+  console.log('data', data);
   return (
     <div className="test">
       <h1>Hello Incorta Visual</h1>
-      <p>${description}</p>
-      <p>{text}</p>
     </div>
   );
 };
