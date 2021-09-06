@@ -68,7 +68,7 @@ module.exports = opts => {
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/visual-sdk': '^0.1.2-alpha-3'
+      '@incorta-org/visual-sdk': '^0.1.2-alpha.4'
     }
   };
 };
