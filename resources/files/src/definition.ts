@@ -1,6 +1,11 @@
-import { ChartDefinitionBase, InsightDefinition, QueryRole } from '@incorta-org/visual-sdk';
+import {
+  ChartDefinitionBase,
+  InsightDefinition,
+  LocaleHelper,
+  QueryRole
+} from '@incorta-org/visual-sdk';
 import icon from './../assets/icon.png';
-import enUS from '../locales/en-US.json';
+import enUS from './locales/en-US.json';
 
 interface MyChartDefinition extends ChartDefinitionBase {
   settings: {
@@ -13,12 +18,13 @@ interface MyChartDefinition extends ChartDefinitionBase {
   };
 }
 
+const locales = new LocaleHelper({
+  'en-US': enUS
+});
+
 const visualDefinition: InsightDefinition<MyChartDefinition> = {
   info: {
-    icon,
-    locale: {
-      'en-US': enUS
-    }
+    icon
   },
   settings: [
     {
@@ -26,7 +32,7 @@ const visualDefinition: InsightDefinition<MyChartDefinition> = {
       settings: [
         {
           metaKey: 'autoRefresh',
-          name: { key: 'common.settings.autoRefresh' },
+          name: locales.formatMessage('autoRefresh'),
           datatype: 'boolean',
           defaultValue: true
         }
@@ -37,11 +43,11 @@ const visualDefinition: InsightDefinition<MyChartDefinition> = {
     {
       metaKey: 'measure',
       queryRole: QueryRole.measure,
-      name: 'measure',
+      name: locales.formatMessage('measure'),
       minCount: 1,
       bindingSettings: [
         {
-          name: 'setting1',
+          name: locales.formatMessage('setting'),
           settings: [
             {
               metaKey: 'color',

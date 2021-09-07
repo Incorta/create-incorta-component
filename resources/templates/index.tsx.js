@@ -7,10 +7,7 @@ import { VisualProps } from '@incorta-org/visual-sdk';
 import './styles.less';
 
 const ${pascalCaseName} = (props: VisualProps) => {
-  const { context, data } = props.insight;
-  console.log('dimension', props.dimension);
-  console.log('context', context);
-  console.log('data', data);
+  console.log(props)
   return (
     <div className="test">
       <h1>Hello Incorta Visual</h1>
