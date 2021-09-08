@@ -2,7 +2,7 @@
   "name": "@incorta-org/create-incorta-visual",
   "description": "Generate a new Incorta visualization",
   "main": "index.js",
-  "version": "0.0.5-alpha.5",
+  "version": "0.0.5-alpha.6",
   "repository": "git@github.com:Incorta/create-incorta-visual.git",
   "license": "MIT",
   "private": false,
