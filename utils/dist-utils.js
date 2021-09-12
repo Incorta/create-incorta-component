@@ -27,7 +27,6 @@ function zipDirectory(source, out) {
 }
 
 let renderBundle;
-let definitionBundle;
 
 const fixImport = async path => {
   const visualizationPath = process.cwd();
@@ -82,7 +81,6 @@ const bundle = async ({ currentProcessDir, package = false }) => {
   try {
     console.log(chalk.gray('Building bundle...'));
 
-    definitionBundle?.cancel?.();
     renderBundle?.cancel?.();
 
     const srcPath = join(currentProcessDir, 'src');
@@ -115,14 +113,9 @@ const bundle = async ({ currentProcessDir, package = false }) => {
       microBundleScriptPath,
       ...getMicroBundleParams('index.tsx', 'render.js')
     ]);
-    definitionBundle = execa('node', [
-      microBundleScriptPath,
-      ...getMicroBundleParams('definition.ts', 'definition.js')
-    ]);
 
     try {
       await renderBundle;
-      await definitionBundle;
     } catch (error) {
       console.error(error);
       //Remove temp folder
@@ -132,11 +125,8 @@ const bundle = async ({ currentProcessDir, package = false }) => {
 
     //Fix react&react-dom imports
     await fixImport(join(tempPath, 'render.modern.js'));
-    //Fix image import (Convert image path to base64)
-    await fixImport(join(tempPath, 'definition.modern.js'));
 
     await fs.copy(join(tempPath, 'render.modern.js'), join(distContentPath, 'render.js'));
-    await fs.copy(join(tempPath, 'definition.modern.js'), join(distContentPath, 'definition.js'));
     await fs.copy(join(tempPath, 'render.css'), join(distContentPath, 'render.css'));
     await fs.copy(join(currentProcessDir, 'package.json'), join(distContentPath, 'package.json'));
 

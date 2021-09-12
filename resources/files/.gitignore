@@ -3,7 +3,6 @@
 
 # IDE Stuff
 /.idea
-/.vscode
 
 # dependencies
 node_modules
