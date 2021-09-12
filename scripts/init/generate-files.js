@@ -48,22 +48,14 @@ async function generateFiles(directory, options) {
     await createVisualizationIndexFile({ options, newVisualPath });
 
     console.log(chalk.grey('Installing dependencies...'));
-    if (options.useYarn) {
-      await execa('yarn', {
-        stdio: 'inherit',
-        cwd: newVisualPath
-      });
-    } else {
-      await execa('npm', ['install'], {
-        stdio: 'inherit',
-        cwd: newVisualPath
-      });
-    }
+
+    await execa('npm', ['install'], {
+      stdio: 'inherit',
+      cwd: newVisualPath
+    });
 
     console.log(successMessage(directory));
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
   return Promise.resolve(directory);
 }
 

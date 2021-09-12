@@ -1,1 +1,26 @@
-{}
+{
+  "icon": "./assets/icon.png",
+  "settings": [
+    {
+      "name": {
+        "key": "group"
+      },
+      "settings": [
+        {
+          "name": {
+            "key": "setting"
+          },
+          "key": "key1",
+          "type": "boolean"
+        }
+      ]
+    }
+  ],
+  "bindingsTrays": [
+    {
+      "key": "tray-key",
+      "name": { "key": "tray" },
+      "queryRole": "measure"
+    }
+  ]
+}

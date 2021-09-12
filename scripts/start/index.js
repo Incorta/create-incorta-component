@@ -9,7 +9,12 @@ const runDevServer = async () => {
     await bundle({ currentProcessDir, package: false });
     serveBundleFiles({ currentProcessDir }); // watch on bundle.js to update the client
     const watcher = chokidar.watch(
-      [join(currentProcessDir, 'src'), join(currentProcessDir, 'package.json')],
+      [
+        join(currentProcessDir, 'src'),
+        join(currentProcessDir, 'locales'),
+        join(currentProcessDir, 'package.json'),
+        join(currentProcessDir, 'definition.json')
+      ],
       {
         persistent: true,
         awaitWriteFinish: true,

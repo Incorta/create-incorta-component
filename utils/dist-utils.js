@@ -29,10 +29,9 @@ function zipDirectory(source, out) {
 let renderBundle;
 
 const fixImport = async path => {
-  const visualizationPath = process.cwd();
   const errorPrint = error => {
     if (error) {
-      return console.error('Error occurred:', error);
+      return console.error(error.message);
     }
   };
 
@@ -57,19 +56,28 @@ const fixImport = async path => {
     },
     errorPrint
   );
+};
 
+const convertImagePathToBase64 = async path => {
+  const visualizationPath = process.cwd();
+  const errorPrint = error => {
+    if (error) {
+      return console.error(error.message);
+    }
+  };
   await replace(
     {
       files: resolve(path),
-      from: [/import (.) from"(.*\.(png|svg))";/g, /import(.+)from '(.*\.(png|svg))';/g],
-      to: (match, group1, group2) => {
-        const paths = group2.split('/');
-        const name = paths[paths.length - 1];
-        const base64 = fs.readFileSync(resolve(visualizationPath, 'assets', name), 'base64');
-        if (group2.indexOf('.png') > -1) {
-          return `const ${group1} = "data:image/png;base64,${base64}";`;
+      from: [/"icon"[\s|\r\n]*:[\s|\r\n]*"(.*\.(.*))"/g],
+      to: (match, iconPath, extension) => {
+        if (!['png', 'svg'].includes(extension)) {
+          throw Error('Invalid icon format.');
+        }
+        const base64 = fs.readFileSync(resolve(visualizationPath, iconPath), 'base64');
+        if (extension === 'png') {
+          return `"icon": "data:image/png;base64,${base64}"`;
         } else {
-          return `const ${group1} = "data:image/svg+xml,${base64}";`;
+          return `"icon": "data:image/svg+xml,${base64}"`;
         }
       }
     },
@@ -117,7 +125,7 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     try {
       await renderBundle;
     } catch (error) {
-      console.error(error);
+      console.error(error?.stderr);
       //Remove temp folder
       rimraf.sync(tempPath, { recursive: true });
       return;
@@ -126,9 +134,18 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     //Fix react&react-dom imports
     await fixImport(join(tempPath, 'render.modern.js'));
 
+    //Convert icon to base64
+    await fs.copy(
+      join(currentProcessDir, 'definition.json'),
+      join(distContentPath, 'definition.json')
+    );
+    await convertImagePathToBase64(join(distContentPath, 'definition.json'));
+
     await fs.copy(join(tempPath, 'render.modern.js'), join(distContentPath, 'render.js'));
     await fs.copy(join(tempPath, 'render.css'), join(distContentPath, 'render.css'));
     await fs.copy(join(currentProcessDir, 'package.json'), join(distContentPath, 'package.json'));
+
+    await fs.copy(join(currentProcessDir, 'locales'), join(distContentPath, 'locales'));
 
     //Remove temp folder
     rimraf.sync(tempPath, { recursive: true });
@@ -143,7 +160,9 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     } else {
       console.log(chalk(`${chalk.green('✅ Done')}`));
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log(e.message);
+  }
 };
 
 module.exports = {

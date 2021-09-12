@@ -1,12 +1,10 @@
-"use strict";
+'use strict';
 
-const inquirer = require("inquirer");
+const inquirer = require('inquirer');
 
 module.exports = async function promptUser(projectName) {
   const questions = await getPromptQuestions(projectName);
-  const [initialResponse, templateQuestion] = await Promise.all([
-    inquirer.prompt(questions),
-  ]);
+  const [initialResponse, templateQuestion] = await Promise.all([inquirer.prompt(questions)]);
 
   return initialResponse;
 };
@@ -14,38 +12,22 @@ module.exports = async function promptUser(projectName) {
 async function getPromptQuestions(projectName, template) {
   return [
     {
-      type: "input",
-      default: "my-incorta-visual",
-      name: "directory",
-      message: "What would you like to name your Incorta visualization?",
-      when: !projectName,
+      type: 'input',
+      default: 'my-incorta-visual',
+      name: 'directory',
+      message: 'What would you like to name your Incorta visualization?',
+      when: !projectName
     },
     {
-      type: "input",
-      name: "description",
-      message: "Describe you visualization in a few words?",
+      type: 'input',
+      name: 'description',
+      message: 'Describe you visualization in a few words?'
     },
     {
-      type: "input",
-      name: "author",
-      message: "Author name?",
-      default: "dev",
-    },
-    {
-      type: "list",
-      name: "tool",
-      message: "what do you use for package management?",
-      choices: [
-        {
-          name: "yarn",
-          value: "yarn",
-        },
-        {
-          name: "npm",
-          value: "npm",
-        },
-      ],
-      default: "yarn",
-    },
+      type: 'input',
+      name: 'author',
+      message: 'Author name?',
+      default: 'dev'
+    }
   ];
 }
