@@ -40,7 +40,7 @@ module.exports = opts => {
       '@types/jest': '^25.1.4',
       '@types/node': '^12.12.38',
       '@types/react': '^17.0.14',
-      '@types/react-dom': '^16.9.7',
+      '@types/react-dom': '^17.0.9',
       '@typescript-eslint/eslint-plugin': '^2.26.0',
       '@typescript-eslint/parser': '^2.26.0',
       'babel-eslint': '^10.0.3',
@@ -59,16 +59,15 @@ module.exports = opts => {
       microbundle: '^0.13.3',
       'npm-run-all': '^4.1.5',
       prettier: '^2.0.4',
-      react: '^17.0.2',
-      'react-dom': '^17.0.2',
       'react-scripts': '4.0.3',
-      'replace-in-file': '^6.2.0',
       typescript: '^4.1.3',
       '@incorta-org/create-incorta-visual': packageJSON.version
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/visual-sdk': '^0.1.2-alpha.11'
+      '@incorta-org/visual-sdk': '^0.1.2-alpha.11',
+      react: '^17.0.2',
+      'react-dom': '^17.0.2'
     }
   };
 };

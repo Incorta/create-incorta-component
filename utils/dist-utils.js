@@ -35,17 +35,25 @@ const fixImport = async path => {
     }
   };
 
+  const destructuringRegex = /{((.|\n)*),((.|\n)*)}/gm;
+  const commaToken = 'ESC-COMMA';
+
   await replace(
     {
       files: resolve(path),
       from: /import(?:['"\s]*([\w*${}\s,]+)from\s*)?['"\s]*['"\s]react['"\s]\s*;/gm,
       to: (match, group) => {
+        const regexResult = destructuringRegex.exec(group);
+        if (regexResult) {
+          group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
+        }
         group = group
           .replace(/\*\s*as/, '')
           .replace(/{(.*)as(.*)}/, (match, group1, group2) => `{${group1}:${group2}}`);
         return group
-          .split(',')
+          .split(/,/g)
           .map(variable => `var ${variable} = window.React;`)
+          .map(imp => imp.replace(new RegExp(commaToken, 'gm'), ','))
           .join(' ');
       }
     },
@@ -57,12 +65,17 @@ const fixImport = async path => {
       files: resolve(path),
       from: /import(?:['"\s]*([\w*${}\s,]+)from\s*)?['"\s]*['"\s]react-dom['"\s]\s*;/gm,
       to: (match, group) => {
+        const regexResult = destructuringRegex.exec(group);
+        if (regexResult) {
+          group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
+        }
         group
           .replace(/\*\s*as/, '')
           .replace(/{(.*)as(.*)}/, (match, group1, group2) => `{${group1}:${group2}}`);
         return group
           .split(',')
           .map(variable => `var ${variable} = window.ReactDom;`)
+          .map(imp => imp.replace(new RegExp(commaToken, 'gm'), ','))
           .join(' ');
       }
     },
