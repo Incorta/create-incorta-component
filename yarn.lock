@@ -1907,6 +1907,11 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
+esm-import-regex@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/esm-import-regex/-/esm-import-regex-1.0.0.tgz#a71ad1ac9534ad8eea3d9f1d0c5c6ad4c9bc6958"
+  integrity sha512-epP1nS6YGcfIsVH9ia0Y2txChLnjusoBaS+Hc/BnXYyM900lWWv4c5AHZYikTiCPlhimmq/weJL1Ptkq78aF/w==
+
 estree-walker@^0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-0.6.1.tgz#53049143f40c6eb918b23671d1fe3219f3a1b362"

@@ -20,7 +20,7 @@
   },
   "settings": {
     "react": {
-      "version": "16"
+      "version": "17"
     }
   },
   "plugins": ["@typescript-eslint"],
@@ -31,7 +31,8 @@
     "react/jsx-fragments": 0,
     "react/no-unused-prop-types": 0,
     "import/export": 0,
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "error"
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "prettier/prettier": "warn"
   }
 }

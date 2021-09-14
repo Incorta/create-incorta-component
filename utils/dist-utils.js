@@ -38,9 +38,15 @@ const fixImport = async path => {
   await replace(
     {
       files: resolve(path),
-      from: [/import\*as(.+)from"react";/g, /import \* as (.+) from 'react';/g],
+      from: /import(?:['"\s]*([\w*${}\s,]+)from\s*)?['"\s]*['"\s]react['"\s]\s*;/gm,
       to: (match, group) => {
-        return `const ${group} = window.React;`;
+        group = group
+          .replace(/\*\s*as/, '')
+          .replace(/{(.*)as(.*)}/, (match, group1, group2) => `{${group1}:${group2}}`);
+        return group
+          .split(',')
+          .map(variable => `var ${variable} = window.React;`)
+          .join(' ');
       }
     },
     errorPrint
@@ -49,9 +55,15 @@ const fixImport = async path => {
   await replace(
     {
       files: resolve(path),
-      from: [/import\*as(.+)from('|")react-dom('|");/g, /import \* as (.+) from 'react-dom';/g],
+      from: /import(?:['"\s]*([\w*${}\s,]+)from\s*)?['"\s]*['"\s]react-dom['"\s]\s*;/gm,
       to: (match, group) => {
-        return `const ${group} = window.ReactDom;`;
+        group
+          .replace(/\*\s*as/, '')
+          .replace(/{(.*)as(.*)}/, (match, group1, group2) => `{${group1}:${group2}}`);
+        return group
+          .split(',')
+          .map(variable => `var ${variable} = window.ReactDom;`)
+          .join(' ');
       }
     },
     errorPrint
@@ -123,7 +135,13 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     ]);
 
     try {
-      await renderBundle;
+      const output = await renderBundle;
+      console.info(
+        output.stderr
+          .split('\n')
+          .filter(line => !line.startsWith('Circular dependency'))
+          .join('\n')
+      );
     } catch (error) {
       console.error(error?.stderr);
       //Remove temp folder

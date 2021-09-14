@@ -25,7 +25,7 @@ module.exports = opts => {
       start: 'create-incorta-visual start',
       test: 'run-s test:unit test:lint test:build',
       'test:build': 'run-s build',
-      'test:lint': 'eslint .',
+      'test:lint': 'eslint "**/*.{ts,tsx}"',
       'test:unit': 'cross-env CI=1 react-scripts test --env=jsdom',
       'test:watch': 'react-scripts test --env=jsdom'
     },
@@ -39,7 +39,7 @@ module.exports = opts => {
       '@testing-library/user-event': '^7.2.1',
       '@types/jest': '^25.1.4',
       '@types/node': '^12.12.38',
-      '@types/react': '^16.9.27',
+      '@types/react': '^17.0.14',
       '@types/react-dom': '^16.9.7',
       '@typescript-eslint/eslint-plugin': '^2.26.0',
       '@typescript-eslint/parser': '^2.26.0',
@@ -68,7 +68,7 @@ module.exports = opts => {
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/visual-sdk': '^0.1.2-alpha.10'
+      '@incorta-org/visual-sdk': '^0.1.2-alpha.11'
     }
   };
 };
