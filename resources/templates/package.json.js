@@ -61,9 +61,9 @@ module.exports = opts => {
       prettier: '^2.0.4',
       react: '^17.0.2',
       'react-dom': '^17.0.2',
-      'react-scripts': '^3.4.1',
+      'react-scripts': '4.0.3',
       'replace-in-file': '^6.2.0',
-      typescript: '^4.3.5',
+      typescript: '^4.1.3',
       '@incorta-org/create-incorta-visual': packageJSON.version
     },
     files: ['dist'],
