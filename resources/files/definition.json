@@ -20,7 +20,8 @@
     {
       "key": "tray-key",
       "name": { "key": "tray" },
-      "queryRole": "measure"
+      "queryRole": "measure",
+      "minCount": 1
     }
   ]
 }

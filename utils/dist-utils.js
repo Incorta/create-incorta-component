@@ -102,7 +102,7 @@ const convertImagePathToBase64 = async path => {
         if (extension === 'png') {
           return `"icon": "data:image/png;base64,${base64}"`;
         } else {
-          return `"icon": "data:image/svg+xml,${base64}"`;
+          return `"icon": "data:image/svg+xml;base64,${base64}"`;
         }
       }
     },
@@ -173,7 +173,9 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     await convertImagePathToBase64(join(distContentPath, 'definition.json'));
 
     await fs.copy(join(tempPath, 'render.modern.js'), join(distContentPath, 'render.js'));
-    await fs.copy(join(tempPath, 'render.css'), join(distContentPath, 'render.css'));
+    try {
+      await fs.copy(join(tempPath, 'render.css'), join(distContentPath, 'render.css'));
+    } catch {}
     await fs.copy(join(currentProcessDir, 'package.json'), join(distContentPath, 'package.json'));
 
     await fs.copy(join(currentProcessDir, 'locales'), join(distContentPath, 'locales'));
