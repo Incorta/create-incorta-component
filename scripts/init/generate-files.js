@@ -4,6 +4,7 @@ const { join, resolve } = require('path');
 const execa = require('execa');
 
 const visualizationPackageJsonGenerator = require('../../resources/templates/package.json.js');
+const definitionJsonGenerator = require('../../resources/templates/definition.json.js');
 const visualizationIndexGenerator = require('../../resources/templates/index.tsx.js');
 
 const createPackageJSON = async ({ options, newVisualPath }) => {
@@ -13,6 +14,19 @@ const createPackageJSON = async ({ options, newVisualPath }) => {
     visualizationPackageJsonGenerator({
       directory,
       author,
+      description
+    }),
+    {
+      spaces: 2
+    }
+  );
+};
+
+const createDefinitionJson = async ({ options, newVisualPath }) => {
+  const { description } = options;
+  await fse.writeJSON(
+    join(newVisualPath, 'definition.json'),
+    definitionJsonGenerator({
       description
     }),
     {
@@ -45,6 +59,7 @@ async function generateFiles(directory, options) {
   try {
     await fse.copy(resourcesFiles, newVisualPath);
     await createPackageJSON({ options, newVisualPath });
+    await createDefinitionJson({ options, newVisualPath });
     await createVisualizationIndexFile({ options, newVisualPath });
 
     console.log(chalk.grey('Initialize git repo...'));
