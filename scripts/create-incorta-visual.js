@@ -12,11 +12,12 @@ const createIncortaVisual = new Command('create-incorta-visual');
 
 const packageJson = require('../package.json');
 
+createIncortaVisual.version(packageJson.version);
+
 createIncortaVisual
   .command('new')
   .description('Create a new Incorta visual')
   .arguments('[directory]')
-  .version(packageJson.version)
   .action(directory => {
     checkBeforeInit();
     runInit(directory, createIncortaVisual);
