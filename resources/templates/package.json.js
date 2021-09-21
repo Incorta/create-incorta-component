@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const packageJSON = require('../../package.json');
 const { v4: uuid } = require('uuid');
 
@@ -6,7 +7,7 @@ module.exports = opts => {
   return {
     id: uuid(),
     version: '0.0.1',
-    name,
+    name: _.kebabCase(name),
     description,
     author: {
       name: author,
