@@ -84,7 +84,7 @@ const successMessage = directory => `
 
         ${chalk('Go to your project directory:')}
 
-        ${chalk.cyan(`cd ${directory}`)}
+        ${chalk.cyan(`cd ${directory.replace(/(\s+)/g, '\\$1')}`)}
 
         ${chalk('Start your dev server by running:')}
 
