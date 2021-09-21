@@ -47,6 +47,25 @@ async function generateFiles(directory, options) {
     await createPackageJSON({ options, newVisualPath });
     await createVisualizationIndexFile({ options, newVisualPath });
 
+    console.log(chalk.grey('Initialize git repo...'));
+
+    try {
+      await execa('git', ['init'], {
+        stdio: 'inherit',
+        cwd: newVisualPath
+      });
+      await execa('git', ['add', '-A'], {
+        stdio: 'inherit',
+        cwd: newVisualPath
+      });
+      await execa('git', ['commit', '-m', 'init'], {
+        stdio: 'inherit',
+        cwd: newVisualPath
+      });
+    } catch (e) {
+      console.warn('Git repo not initialized', e);
+    }
+
     console.log(chalk.grey('Installing dependencies...'));
 
     await execa('npm', ['install'], {
