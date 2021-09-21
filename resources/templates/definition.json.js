@@ -1,9 +1,10 @@
 const _ = require('lodash');
 
 module.exports = opts => {
-  const { description } = opts;
+  const { description, directory: name } = opts;
   return {
     icon: './assets/icon.png',
+    name,
     hint: description,
     settings: [
       {

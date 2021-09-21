@@ -23,10 +23,11 @@ const createPackageJSON = async ({ options, newVisualPath }) => {
 };
 
 const createDefinitionJson = async ({ options, newVisualPath }) => {
-  const { description } = options;
+  const { description, directory } = options;
   await fse.writeJSON(
     join(newVisualPath, 'definition.json'),
     definitionJsonGenerator({
+      directory,
       description
     }),
     {
