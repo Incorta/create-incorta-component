@@ -139,6 +139,8 @@ const bundle = async ({ currentProcessDir, package = false }) => {
       '--jsxImportSource',
       '-f',
       'esm',
+      '--define',
+      'process.env.NODE_ENV=production',
       ...(package ? ['--no-sourcemap', '--no-generateTypes'] : ['--no-compress'])
     ];
 
