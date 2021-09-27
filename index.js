@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("./scripts/create-incorta-visual");
+require("./scripts/create-incorta-component");

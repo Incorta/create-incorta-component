@@ -1,16 +1,16 @@
 const { camelCase, startCase } = require('lodash');
 
-const visualizationIndexGenerator = ({ directory }) => {
+const componentIndexGenerator = ({ directory }) => {
   const pascalCaseName = startCase(camelCase(directory)).replace(/ /g, '');
   return `import React from 'react';
-import { ComponentsProps } from '@incorta-org/visual-sdk';
+import { ComponentProps } from '@incorta-org/component-sdk';
 import './styles.less';
 
-const ${pascalCaseName} = (props: ComponentsProps) => {
+const ${pascalCaseName} = (props: ComponentProps) => {
   console.log(props);
   return (
     <div className="test">
-      <h1>Hello Incorta Visual</h1>
+      <h1>Hello incorta Component</h1>
     </div>
   );
 };
@@ -19,4 +19,4 @@ export default ${pascalCaseName};
 `;
 };
 
-module.exports = visualizationIndexGenerator;
+module.exports = componentIndexGenerator;

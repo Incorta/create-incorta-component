@@ -1,14 +1,13 @@
-# Create Incorta Visual
+# Create incorta Component
 
-This package include the `create-incorta-visual` CLI to make the creation of custom Incotra visualizations simpler.
-
+This package include the `create-incorta-component` CLI to make the creation of incotra components simpler.
 
 ## How to use
 
 Install the package:
 
-`npm install -g @incorta-org/create-incorta-visual`
+`npm install -g @incorta-org/create-incorta-component`
 
-You can create a new visualization by runnnig: 
+You can create a new component by running:
 
-`create-incorta-visual my-incorta-visual`
+`create-incorta-component new My Component`

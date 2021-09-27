@@ -2,7 +2,7 @@
   "json.schemas": [
     {
       "fileMatch": ["definition.json"],
-      "url": "./node_modules/@incorta-org/visual-sdk/definition.schema.json"
+      "url": "./node_modules/@incorta-org/component-sdk/definition.schema.json"
     }
   ]
 }

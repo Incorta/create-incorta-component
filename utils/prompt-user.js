@@ -13,15 +13,15 @@ async function getPromptQuestions(projectName, template) {
   return [
     {
       type: 'input',
-      default: 'my-incorta-visual',
+      default: 'My Component',
       name: 'directory',
-      message: 'What would you like to name your Incorta visualization?',
+      message: 'What would you like to name your Incorta component?',
       when: !projectName
     },
     {
       type: 'input',
       name: 'description',
-      message: 'Describe you visualization in a few words?'
+      message: 'Describe you component in a few words?'
     },
     {
       type: 'input',

@@ -1,9 +1,9 @@
 {
-  "name": "@incorta-org/create-incorta-visual",
-  "description": "Generate a new Incorta visualization",
+  "name": "@incorta-org/create-incorta-component",
+  "description": "Generate a new incorta component",
   "main": "index.js",
-  "version": "0.0.5-alpha.13",
-  "repository": "git@github.com:Incorta/create-incorta-visual.git",
+  "version": "0.0.1-alpha.1",
+  "repository": "git@github.com:Incorta/create-incorta-component.git",
   "license": "MIT",
   "private": false,
   "dependencies": {
@@ -28,6 +28,6 @@
     "prettier": "^2.3.2"
   },
   "bin": {
-    "create-incorta-visual": "./index.js"
+    "create-incorta-component": "./index.js"
   }
 }

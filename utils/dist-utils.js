@@ -36,7 +36,7 @@ const fixImport = async path => {
   };
 
   const destructuringRegex = /{((.|\n)*),((.|\n)*)}/gm;
-  const commaToken = 'ESC-COMMA';
+  const commaToken = ' ESC-COMMA ';
 
   await replace(
     {
@@ -48,8 +48,8 @@ const fixImport = async path => {
           group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
         }
         group = group
-          .replace(/\*\s*as/, '')
-          .replace(/{(.*)as(.*)}/, (match, group1, group2) => `{${group1}:${group2}}`);
+          .replace(/\*\s*as/gm, '')
+          .replace(/(\w+)\sas\s(\w+)/gm, (match, group1, group2) => `${group1}:${group2}`);
         return group
           .split(/,/g)
           .map(variable => `var ${variable} = window.React;`)
@@ -70,8 +70,8 @@ const fixImport = async path => {
           group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
         }
         group
-          .replace(/\*\s*as/, '')
-          .replace(/{(.*)as(.*)}/, (match, group1, group2) => `{${group1}:${group2}}`);
+          .replace(/\*\s*as/gm, '')
+          .replace(/(\w+)\sas\s(\w+)/gm, (match, group1, group2) => `${group1}:${group2}`);
         return group
           .split(',')
           .map(variable => `var ${variable} = window.ReactDom;`)
@@ -84,7 +84,7 @@ const fixImport = async path => {
 };
 
 const convertImagePathToBase64 = async path => {
-  const visualizationPath = process.cwd();
+  const componentPath = process.cwd();
   const errorPrint = error => {
     if (error) {
       return console.error(error.message);
@@ -98,7 +98,7 @@ const convertImagePathToBase64 = async path => {
         if (!['png', 'svg'].includes(extension)) {
           throw Error('Invalid icon format.');
         }
-        const base64 = fs.readFileSync(resolve(visualizationPath, iconPath), 'base64');
+        const base64 = fs.readFileSync(resolve(componentPath, iconPath), 'base64');
         if (extension === 'png') {
           return `"icon": "data:image/png;base64,${base64}"`;
         } else {
@@ -120,10 +120,10 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     const tempPath = join(currentProcessDir, `.civ_temp`);
     const distPath = join(currentProcessDir, 'dist');
     const distContentPath = join(distPath, 'content');
-    const createIncortaVisualRootPath = resolve(__dirname, '..');
+    const createIncortaComponentRootPath = resolve(__dirname, '..');
 
     const microBundleScriptPath = join(
-      createIncortaVisualRootPath,
+      createIncortaComponentRootPath,
       './node_modules/microbundle/dist/cli.js'
     );
 
@@ -188,9 +188,11 @@ const bundle = async ({ currentProcessDir, package = false }) => {
     //Compress Bundle
     if (package) {
       console.log(chalk.gray('Compressing bundle...'));
-      await zipDirectory(distContentPath, join(distPath, 'bundle.inc'));
+      const { version, name } = await fs.readJson(join(distContentPath, 'package.json'));
+      const bundleName = `${name}-bundle-${version}.inc`;
+      await zipDirectory(distContentPath, join(distPath, bundleName));
       console.log(
-        chalk(`${chalk.green('✅ ')} Your bundle is ready at ${chalk.cyan('dist/bundle.inc')} `)
+        chalk(`${chalk.green('✅ ')} Your bundle is ready at ${chalk.cyan(`dist/${bundleName}`)} `)
       );
     } else {
       console.log(chalk(`${chalk.green('✅ Done')}`));

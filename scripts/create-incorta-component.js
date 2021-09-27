@@ -8,33 +8,33 @@ const runStart = require('./start/index');
 
 const checkBeforeInit = require('../utils/check-requirements');
 
-const createIncortaVisual = new Command('create-incorta-visual');
+const createIncortaComponent = new Command('create-incorta-component');
 
 const packageJson = require('../package.json');
 
-createIncortaVisual.version(packageJson.version);
+createIncortaComponent.version(packageJson.version);
 
-createIncortaVisual
+createIncortaComponent
   .command('new')
-  .description('Create a new Incorta visual')
+  .description('Create a new Incorta Component')
   .arguments('[directory]')
   .action(directory => {
     checkBeforeInit();
-    runInit(directory, createIncortaVisual);
+    runInit(directory, createIncortaComponent);
   });
 
-createIncortaVisual
+createIncortaComponent
   .command('start')
   .description('Start development server')
   .action(() => {
     runStart();
   });
 
-createIncortaVisual
+createIncortaComponent
   .command('package')
-  .description('Build visualization and generate bundle.inc file')
+  .description('Build component and generate bundle file')
   .action(() => {
     runPackage();
   });
 
-createIncortaVisual.parse(process.argv);
+createIncortaComponent.parse(process.argv);

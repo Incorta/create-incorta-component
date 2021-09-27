@@ -22,8 +22,8 @@ module.exports = opts => {
       node: '>=10'
     },
     scripts: {
-      build: 'create-incorta-visual package',
-      start: 'create-incorta-visual start',
+      build: 'create-incorta-component package',
+      start: 'create-incorta-component start',
       test: 'run-s test:unit test:lint test:build',
       'test:build': 'run-s build',
       'test:lint': 'eslint "**/*.{ts,tsx}"',
@@ -62,11 +62,11 @@ module.exports = opts => {
       prettier: '^2.0.4',
       'react-scripts': '4.0.3',
       typescript: '^4.1.3',
-      '@incorta-org/create-incorta-visual': packageJSON.version
+      '@incorta-org/create-incorta-component': packageJSON.version
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/visual-sdk': '^0.1.2-alpha.11',
+      '@incorta-org/component-sdk': '^0.0.1-alpha.1',
       react: '^17.0.2',
       'react-dom': '^17.0.2'
     }
