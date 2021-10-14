@@ -3,7 +3,7 @@ const _ = require('lodash');
 module.exports = opts => {
   const { description, directory: name } = opts;
   return {
-    icon: './assets/icon.png',
+    icon: './assets/icon.svg',
     name,
     hint: description,
     settings: [
