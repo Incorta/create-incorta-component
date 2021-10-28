@@ -69,7 +69,7 @@ const fixImport = async path => {
         if (regexResult) {
           group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
         }
-        group
+        group = group
           .replace(/\*\s*as/gm, '')
           .replace(/(\w+)\sas\s(\w+)/gm, (match, group1, group2) => `${group1}:${group2}`);
         return group
