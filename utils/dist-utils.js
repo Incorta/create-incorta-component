@@ -74,7 +74,7 @@ const fixImport = async path => {
           .replace(/(\w+)\sas\s(\w+)/gm, (match, group1, group2) => `${group1}:${group2}`);
         return group
           .split(',')
-          .map(variable => `var ${variable} = window.ReactDom;`)
+          .map(variable => `var ${variable} = window.ReactDOM;`)
           .map(imp => imp.replace(new RegExp(commaToken, 'gm'), ','))
           .join(' ');
       }
