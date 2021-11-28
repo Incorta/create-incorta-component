@@ -22,6 +22,8 @@ module.exports = opts => {
       node: '>=10'
     },
     scripts: {
+      postinstall: 'npm run generate',
+      generate: 'create-incorta-component generate',
       build: 'create-incorta-component package',
       start: 'create-incorta-component start',
       test: 'run-s test:unit test:lint test:build',
@@ -66,7 +68,7 @@ module.exports = opts => {
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/component-sdk': '^0.0.1-alpha.3',
+      '@incorta-org/component-sdk': '^0.0.1-alpha.4',
       react: '^17.0.2',
       'react-dom': '^17.0.2'
     }

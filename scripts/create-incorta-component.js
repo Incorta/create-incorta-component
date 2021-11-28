@@ -5,6 +5,7 @@ const { Command } = require('commander');
 const runInit = require('./init/index');
 const runPackage = require('./package/index');
 const runStart = require('./start/index');
+const runGenerate = require('./generate/index');
 
 const checkBeforeInit = require('../utils/check-requirements');
 
@@ -28,6 +29,13 @@ createIncortaComponent
   .description('Start development server')
   .action(() => {
     runStart();
+  });
+
+createIncortaComponent
+  .command('generate')
+  .description('Generate definition types')
+  .action(() => {
+    runGenerate();
   });
 
 createIncortaComponent
