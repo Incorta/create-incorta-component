@@ -2,6 +2,9 @@ const path = require('path');
 const fs = require('fs');
 const prettier = require('prettier');
 const generateTypes = require('./generateTypes');
+const chalk = require('chalk');
+
+const imports = new Set();
 
 function runGenerate() {
   const currentProcessDir = process.cwd();
@@ -36,8 +39,8 @@ function generateTypesFromSettings(settings) {
   const lines = [];
 
   settings.forEach(settingGroup => {
-    settingGroup.settings.forEach(setting => {
-      lines.push(`${setting.key}: ${getTypeFromSetting(setting)}`);
+    settingGroup.settings?.forEach(setting => {
+      lines.push(`'${setting.key}': ${getTypeFromSetting(setting)}`);
     });
   });
 
@@ -48,7 +51,7 @@ function generateTypesFromBindings(bindings) {
   const lines = [];
 
   bindings.forEach(binding => {
-    lines.push(`${binding.key}: {`);
+    lines.push(`'${binding.key}': {`);
     if (binding.settings) {
       lines.push(...generateTypesFromSettings(binding.settings));
     }
@@ -57,8 +60,6 @@ function generateTypesFromBindings(bindings) {
 
   return lines;
 }
-
-const imports = new Set();
 
 function getTypeFromSetting(setting) {
   if (setting.type in generateTypes) {
@@ -104,8 +105,10 @@ function writeTypesToVisualSDKFolder(generatedTypes) {
 
   fs.writeFileSync(generatedTypesPath, formattedGeneratedTypes);
 
-  console.log('Generated types:\n\n', formattedGeneratedTypes);
-  console.log('\nSaved To: ', generatedTypesPath);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(chalk.gray('Generated types:\n\n'), formattedGeneratedTypes, '\n');
+  }
+  console.log(chalk.gray('Types updated in: '), generatedTypesPath);
 }
 
 module.exports = runGenerate;
