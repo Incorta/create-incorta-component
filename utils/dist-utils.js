@@ -116,56 +116,11 @@ const bundle = async ({ currentProcessDir, package = false }) => {
 
     renderBundle?.cancel?.();
 
-    const srcPath = join(currentProcessDir, 'src');
-    const tempPath = join(currentProcessDir, `.civ_temp`);
     const distPath = join(currentProcessDir, 'dist');
     const distContentPath = join(distPath, 'content');
-    const createIncortaComponentRootPath = resolve(__dirname, '..');
 
-    const microBundleScriptPath = join(
-      createIncortaComponentRootPath,
-      './node_modules/microbundle/dist/cli.js'
-    );
-
-    const getMicroBundleParams = (inputPath, outputPath) => [
-      '-i',
-      join(srcPath, inputPath),
-      '-o',
-      join(tempPath, outputPath),
-      '--jsx',
-      'React.createElement',
-      '--external',
-      '.*/assets/.*,.*\\\\assets\\\\.*',
-      '--jsxImportSource',
-      '-f',
-      'esm',
-      '--define',
-      'process.env.NODE_ENV=production',
-      ...(package ? ['--no-sourcemap', '--no-generateTypes'] : ['--no-compress'])
-    ];
-
-    renderBundle = execa('node', [
-      microBundleScriptPath,
-      ...getMicroBundleParams('index.tsx', 'render.js')
-    ]);
-
-    try {
-      const output = await renderBundle;
-      console.info(
-        output.stderr
-          .split('\n')
-          .filter(line => !line.startsWith('Circular dependency'))
-          .join('\n')
-      );
-    } catch (error) {
-      console.error(error?.stderr);
-      //Remove temp folder
-      rimraf.sync(tempPath, { recursive: true });
-      return;
-    }
-
-    //Fix react&react-dom imports
-    await fixImport(join(tempPath, 'render.modern.js'));
+    renderBundle = execa('npm', ['run', 'build']);
+    await renderBundle;
 
     //Convert icon to base64
     await fs.copy(
@@ -173,17 +128,11 @@ const bundle = async ({ currentProcessDir, package = false }) => {
       join(distContentPath, 'definition.json')
     );
     await convertImagePathToBase64(join(distContentPath, 'definition.json'));
-
-    await fs.copy(join(tempPath, 'render.modern.js'), join(distContentPath, 'render.js'));
     try {
-      await fs.copy(join(tempPath, 'render.css'), join(distContentPath, 'render.css'));
+      await fs.rename(join(distContentPath, 'style.css'), join(distContentPath, 'render.css'));
     } catch {}
     await fs.copy(join(currentProcessDir, 'package.json'), join(distContentPath, 'package.json'));
-
     await fs.copy(join(currentProcessDir, 'locales'), join(distContentPath, 'locales'));
-
-    //Remove temp folder
-    rimraf.sync(tempPath, { recursive: true });
 
     //Compress Bundle
     if (package) {
