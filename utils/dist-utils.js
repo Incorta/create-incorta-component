@@ -3,7 +3,6 @@ const fs = require('fs-extra');
 const execa = require('execa');
 const { join, resolve } = require('path');
 const chalk = require('chalk');
-const rimraf = require('rimraf');
 const archiver = require('archiver');
 
 /**
@@ -27,61 +26,6 @@ function zipDirectory(source, out) {
 }
 
 let renderBundle;
-
-const fixImport = async path => {
-  const errorPrint = error => {
-    if (error) {
-      return console.error(error.message);
-    }
-  };
-
-  const destructuringRegex = /{((.|\n)*),((.|\n)*)}/gm;
-  const commaToken = ' ESC-COMMA ';
-
-  await replace(
-    {
-      files: resolve(path),
-      from: /import(?:['"\s]*([\w*${}\s,]+)from\s*)?['"\s]*['"\s]react['"\s]\s*;/gm,
-      to: (match, group) => {
-        const regexResult = destructuringRegex.exec(group);
-        if (regexResult) {
-          group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
-        }
-        group = group
-          .replace(/\*\s*as/gm, '')
-          .replace(/(\w+)\sas\s(\w+)/gm, (match, group1, group2) => `${group1}:${group2}`);
-        return group
-          .split(/,/g)
-          .map(variable => `var ${variable} = window.React;`)
-          .map(imp => imp.replace(new RegExp(commaToken, 'gm'), ','))
-          .join(' ');
-      }
-    },
-    errorPrint
-  );
-
-  await replace(
-    {
-      files: resolve(path),
-      from: /import(?:['"\s]*([\w*${}\s,]+)from\s*)?['"\s]*['"\s]react-dom['"\s]\s*;/gm,
-      to: (match, group) => {
-        const regexResult = destructuringRegex.exec(group);
-        if (regexResult) {
-          group = group.replace(regexResult[0], regexResult[0].replace(/,/g, commaToken));
-        }
-        group = group
-          .replace(/\*\s*as/gm, '')
-          .replace(/(\w+)\sas\s(\w+)/gm, (match, group1, group2) => `${group1}:${group2}`);
-        return group
-          .split(',')
-          .map(variable => `var ${variable} = window.ReactDOM;`)
-          .map(imp => imp.replace(new RegExp(commaToken, 'gm'), ','))
-          .join(' ');
-      }
-    },
-    errorPrint
-  );
-};
 
 const convertImagePathToBase64 = async path => {
   const componentPath = process.cwd();
