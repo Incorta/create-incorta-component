@@ -25,12 +25,7 @@ module.exports = opts => {
       postinstall: 'npm run generate',
       generate: 'create-incorta-component generate',
       build: 'create-incorta-component package',
-      start: 'create-incorta-component start',
-      test: 'run-s test:unit test:lint test:build',
-      'test:build': 'run-s build',
-      'test:lint': 'eslint "**/*.{ts,tsx}"',
-      'test:unit': 'cross-env CI=1 react-scripts test --env=jsdom',
-      'test:watch': 'react-scripts test --env=jsdom'
+      start: 'create-incorta-component start'
     },
     peerDependencies: {
       react: '^17.0.2',
@@ -64,11 +59,12 @@ module.exports = opts => {
       prettier: '^2.0.4',
       'react-scripts': '4.0.3',
       typescript: '^4.1.3',
-      '@incorta-org/create-incorta-component': packageJSON.version
+      // '@incorta-org/create-incorta-component': packageJSON.version
+      '@incorta-org/create-incorta-component': 'file:/Users/incorta/Desktop/create-incorta-visual'
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/component-sdk': '^0.0.1-alpha.4',
+      '@incorta-org/component-sdk': 'file:/Users/incorta/Desktop/visual-sdk',
       react: '^17.0.2',
       'react-dom': '^17.0.2'
     }

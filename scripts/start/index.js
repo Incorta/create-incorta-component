@@ -1,33 +1,13 @@
-const serveBundleFiles = require('./serve-bundle-files');
-const { bundle } = require('../../utils/dist-utils');
-const chokidar = require('chokidar');
-const { join } = require('path');
+const path = require('path');
+const shelljs = require('shelljs');
 
-const runDevServer = async () => {
+async function runDevServer() {
   try {
-    const currentProcessDir = process.cwd();
-    await bundle({ currentProcessDir, package: false });
-    serveBundleFiles({ currentProcessDir }); // watch on bundle.js to update the client
-    const watcher = chokidar.watch(
-      [
-        join(currentProcessDir, 'src'),
-        join(currentProcessDir, 'locales'),
-        join(currentProcessDir, 'package.json'),
-        join(currentProcessDir, 'definition.json')
-      ],
-      {
-        persistent: true,
-        awaitWriteFinish: true,
-        disableGlobbing: true,
-        ignoreInitial: true
-      }
-    );
-    watcher.on('change', path => {
-      bundle({ currentProcessDir, package: false });
-    });
+    let configFilePath = path.resolve(__dirname, './vite-config-dev.js');
+    shelljs.exec(`npx vite build --watch --config ${configFilePath}`);
   } catch (e) {
     console.log(e);
   }
-};
+}
 
 module.exports = runDevServer;

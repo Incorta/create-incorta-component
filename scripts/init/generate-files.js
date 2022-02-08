@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const fse = require('fs-extra');
 const { join, resolve } = require('path');
-const execa = require('execa');
+const shelljs = require('shelljs');
 
 const componentPackageJsonGenerator = require('../../resources/templates/package.json.js');
 const definitionJsonGenerator = require('../../resources/templates/definition.json.js');
@@ -65,7 +65,7 @@ async function generateFiles(directory, options) {
 
     console.log(chalk.grey('Installing dependencies...'));
 
-    await execa('npm', ['install'], {
+    shelljs.exec('npm install', {
       stdio: 'inherit',
       cwd: newComponentPath
     });
@@ -73,15 +73,15 @@ async function generateFiles(directory, options) {
     console.log(chalk.grey('Initialize git repo...'));
 
     try {
-      await execa('git', ['init'], {
+      shelljs.exec('git init', {
         stdio: 'inherit',
         cwd: newComponentPath
       });
-      await execa('git', ['add', '-A'], {
+      shelljs.exec('git add -A', {
         stdio: 'inherit',
         cwd: newComponentPath
       });
-      await execa('git', ['commit', '-m', 'init'], {
+      shelljs.exec('git commit -m init', {
         stdio: 'inherit',
         cwd: newComponentPath
       });
@@ -90,7 +90,9 @@ async function generateFiles(directory, options) {
     }
 
     console.log(successMessage(directory));
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
   return Promise.resolve(directory);
 }
 
