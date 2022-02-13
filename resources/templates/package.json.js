@@ -3,7 +3,7 @@ const packageJSON = require('../../package.json');
 const { v4: uuid } = require('uuid');
 
 module.exports = opts => {
-  const { directory: name, description, author, useYarn } = opts;
+  const { directory: name, description, author } = opts;
   return {
     id: uuid(),
     version: '0.0.1',
@@ -54,17 +54,15 @@ module.exports = opts => {
       'eslint-plugin-react': '^7.17.0',
       'eslint-plugin-standard': '^4.0.1',
       less: '^4.1.1',
-      microbundle: '^0.13.3',
       'npm-run-all': '^4.1.5',
       prettier: '^2.0.4',
       'react-scripts': '4.0.3',
       typescript: '^4.1.3',
-      // '@incorta-org/create-incorta-component': packageJSON.version
-      '@incorta-org/create-incorta-component': 'file:/Users/incorta/Desktop/create-incorta-visual'
+      '@incorta-org/create-incorta-component': packageJSON.version
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/component-sdk': 'file:/Users/incorta/Desktop/visual-sdk',
+      '@incorta-org/component-sdk': '^0.0.1-alpha.4',
       react: '^17.0.2',
       'react-dom': '^17.0.2'
     }
