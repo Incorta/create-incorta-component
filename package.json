@@ -2,7 +2,7 @@
   "name": "@incorta-org/create-incorta-component",
   "description": "Generate a new incorta component",
   "main": "index.js",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-alpha.8",
   "repository": "git@github.com:Incorta/create-incorta-component.git",
   "license": "MIT",
   "private": false,
@@ -21,9 +21,7 @@
     "shelljs": "^0.8.5",
     "socket.io": "^4.1.3",
     "uuid": "^8.3.2",
-    "vite": "^2.7.13"
-  },
-  "devDependencies": {
+    "vite": "^2.7.13",
     "prettier": "^2.5.0"
   },
   "bin": {
