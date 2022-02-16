@@ -3,7 +3,7 @@ const packageJSON = require('../../package.json');
 const { v4: uuid } = require('uuid');
 
 module.exports = opts => {
-  const { directory: name, description, author, useYarn } = opts;
+  const { directory: name, description, author } = opts;
   return {
     id: uuid(),
     version: '0.0.1',
@@ -22,13 +22,10 @@ module.exports = opts => {
       node: '>=10'
     },
     scripts: {
+      postinstall: 'npm run generate',
+      generate: 'create-incorta-component generate',
       build: 'create-incorta-component package',
-      start: 'create-incorta-component start',
-      test: 'run-s test:unit test:lint test:build',
-      'test:build': 'run-s build',
-      'test:lint': 'eslint "**/*.{ts,tsx}"',
-      'test:unit': 'cross-env CI=1 react-scripts test --env=jsdom',
-      'test:watch': 'react-scripts test --env=jsdom'
+      start: 'create-incorta-component start'
     },
     peerDependencies: {
       react: '^17.0.2',
@@ -57,7 +54,6 @@ module.exports = opts => {
       'eslint-plugin-react': '^7.17.0',
       'eslint-plugin-standard': '^4.0.1',
       less: '^4.1.1',
-      microbundle: '^0.13.3',
       'npm-run-all': '^4.1.5',
       prettier: '^2.0.4',
       'react-scripts': '4.0.3',
@@ -66,7 +62,7 @@ module.exports = opts => {
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/component-sdk': '^0.0.1-alpha.3',
+      '@incorta-org/component-sdk': '^1.0.0-alpha.0',
       react: '^17.0.2',
       'react-dom': '^17.0.2'
     }
