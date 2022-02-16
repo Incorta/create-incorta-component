@@ -70,25 +70,6 @@ async function generateFiles(directory, options) {
       cwd: newComponentPath
     });
 
-    console.log(chalk.grey('Initialize git repo...'));
-
-    try {
-      shelljs.exec('git init', {
-        stdio: 'inherit',
-        cwd: newComponentPath
-      });
-      shelljs.exec('git add -A', {
-        stdio: 'inherit',
-        cwd: newComponentPath
-      });
-      shelljs.exec('git commit -m init', {
-        stdio: 'inherit',
-        cwd: newComponentPath
-      });
-    } catch (e) {
-      console.warn('Git repo not initialized', e);
-    }
-
     console.log(successMessage(directory));
   } catch (e) {
     console.log(e);
