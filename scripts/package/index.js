@@ -28,7 +28,7 @@ function zipDirectory(source, out) {
 const createBuildPackage = async () => {
   try {
     let configFilePath = path.resolve(__dirname, './vite-config-prod.js');
-    shelljs.exec(`npx vite build --config ${configFilePath}`);
+    shelljs.exec(`npx vite build --config "${configFilePath}"`);
 
     console.log(chalk.gray('Compressing bundle...'));
     let distPath = resolvePath('dist');
