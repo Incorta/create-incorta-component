@@ -41,6 +41,31 @@ const createComponentIndexFile = async ({ options, newComponentPath }) => {
   await fse.writeFile(indexPath, componentIndexGenerator(options));
 };
 
+const createGitIgnoreFile = async ({ newComponentPath }) => {
+  const gitignorePath = join(newComponentPath, '.gitignore');
+  console.log('gitignorePath', gitignorePath);
+  await fse.writeFile(
+    gitignorePath,
+    `/.idea
+node_modules
+/coverage
+build
+dist
+.civ_temp
+.rpt2_cache
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+`
+  );
+};
+
 async function generateFiles(directory, options) {
   // Place where process is opened
   const currentProcessDir = process.cwd();
@@ -62,6 +87,7 @@ async function generateFiles(directory, options) {
     await createPackageJSON({ options, newComponentPath });
     await createDefinitionJson({ options, newComponentPath });
     await createComponentIndexFile({ options, newComponentPath });
+    await createGitIgnoreFile({ newComponentPath });
 
     console.log(chalk.grey('Installing dependencies...'));
 
@@ -69,6 +95,25 @@ async function generateFiles(directory, options) {
       stdio: 'inherit',
       cwd: newComponentPath
     });
+
+    console.log(chalk.grey('Initialize git repo...'));
+
+    try {
+      shelljs.exec('git init', {
+        stdio: 'inherit',
+        cwd: newComponentPath
+      });
+      shelljs.exec('git add -A', {
+        stdio: 'inherit',
+        cwd: newComponentPath
+      });
+      shelljs.exec('git commit -m init', {
+        stdio: 'inherit',
+        cwd: newComponentPath
+      });
+    } catch (e) {
+      console.warn('Git repo not initialized', e);
+    }
 
     console.log(successMessage(directory));
   } catch (e) {
