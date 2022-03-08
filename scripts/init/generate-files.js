@@ -37,8 +37,13 @@ const createDefinitionJson = async ({ options, newComponentPath }) => {
 };
 
 const createComponentIndexFile = async ({ options, newComponentPath }) => {
+  let { component, index, pascalCaseName } = componentIndexGenerator(options);
+
   const indexPath = join(newComponentPath, 'src', 'index.tsx');
-  await fse.writeFile(indexPath, componentIndexGenerator(options));
+  await fse.writeFile(indexPath, index);
+
+  const componentPath = join(newComponentPath, 'src', `${pascalCaseName}.tsx`);
+  await fse.writeFile(componentPath, component);
 };
 
 const createGitIgnoreFile = async ({ newComponentPath }) => {
