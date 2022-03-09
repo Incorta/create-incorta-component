@@ -97,11 +97,21 @@ module.exports = defineConfig({
       buildEnd() {
         notifyIncortaForUpdate();
       }
+    },
+    {
+      name: 'append-source-url',
+      writeBundle() {
+        let renderJSPath = resolvePath('./dist/content/render.js');
+        let fileContent = fs.readFileSync(renderJSPath, 'utf-8');
+        fileContent += '//# sourceURL=render.js\n';
+        fs.writeFileSync(renderJSPath, fileContent);
+      }
     }
   ],
   build: {
     outDir: resolvePath('dist/content'),
     minify: false,
+    sourcemap: 'inline',
     lib: {
       entry: resolvePath('src/index.tsx'),
       name: 'SDKComponent',
