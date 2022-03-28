@@ -17,7 +17,7 @@ const validateDirectory = async directory => {
     }
     const files = await fse.readdir(newComponentPath);
     if (files.length > 1) {
-      console.log(chalk.red('The directory you provided is not a Empty 🚨'));
+      console.log(chalk.red('The directory you provided is not empty 🚨'));
       process.exit(0);
     }
   }
