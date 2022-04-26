@@ -2,7 +2,7 @@
   "name": "@incorta-org/create-incorta-component",
   "description": "Generate a new incorta component",
   "main": "index.js",
-  "version": "1.0.2-alpha.1",
+  "version": "1.1.0",
   "repository": "git@github.com:Incorta/create-incorta-component.git",
   "license": "MIT",
   "private": false,
