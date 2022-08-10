@@ -38,7 +38,7 @@ function readJSON(path) {
 function generateTypesFromSettings(settings) {
   const lines = [];
 
-  settings.forEach(settingGroup => {
+  settings?.forEach?.(settingGroup => {
     settingGroup.settings?.forEach(setting => {
       lines.push(`'${setting.key}': ${getTypeFromSetting(setting)}`);
     });
