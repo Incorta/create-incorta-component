@@ -39,7 +39,19 @@ let io = socket(server, {
   }
 });
 
-let notifyIncortaForUpdate = debounce(() => io.emit('update'), 300);
+let notifyIncortaForUpdate = debounce(() => {
+  try {
+    let contentPath = resolvePath('dist/content');
+    let files = fs.readdirSync(contentPath);
+    if (files.length > 0) {
+      io.emit('update');
+    } else {
+      notifyIncortaForUpdate();
+    }
+  } catch {
+    notifyIncortaForUpdate();
+  }
+}, 300);
 
 /**
  * define vite configurations
