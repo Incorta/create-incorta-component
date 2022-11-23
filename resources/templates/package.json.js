@@ -62,7 +62,7 @@ module.exports = opts => {
     },
     files: ['dist'],
     dependencies: {
-      '@incorta-org/component-sdk': '~2.0.0-alpha.0',
+      '@incorta-org/component-sdk': '~2.0.0',
       react: '^17.0.2',
       'react-dom': '^17.0.2'
     }
