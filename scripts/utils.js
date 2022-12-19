@@ -1,12 +1,13 @@
 const path = require('path');
+const vite = require('vite');
 
 let scriptPath = process.cwd();
 
 function resolvePath(paths) {
   if (Array.isArray(paths)) {
-    return paths.map(p => path.resolve(scriptPath, p));
+    return paths.map(p => vite.normalizePath(path.resolve(scriptPath, p)));
   } else {
-    return path.resolve(scriptPath, paths);
+    return vite.normalizePath(path.resolve(scriptPath, paths));
   }
 }
 
