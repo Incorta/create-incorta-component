@@ -6,6 +6,7 @@ const shelljs = require('shelljs');
 const componentPackageJsonGenerator = require('../../resources/templates/package.json.js');
 const definitionJsonGenerator = require('../../resources/templates/definition.json.js');
 const componentIndexGenerator = require('../../resources/templates/index.tsx.js');
+const componentTestGenerator = require('../../resources/templates/test.tsx.js');
 
 const createPackageJSON = async ({ options, newComponentPath }) => {
   const { directory, author, description } = options;
@@ -44,6 +45,13 @@ const createComponentIndexFile = async ({ options, newComponentPath }) => {
 
   const componentPath = join(newComponentPath, 'src', `${pascalCaseName}.tsx`);
   await fse.writeFile(componentPath, component);
+};
+
+const createComponentTestFile = async ({ options, newComponentPath }) => {
+  let { component, pascalCaseName } = componentTestGenerator(options);
+
+  const indexPath = join(newComponentPath, 'src', `${pascalCaseName}.test.tsx`);
+  await fse.writeFile(indexPath, component);
 };
 
 const createGitIgnoreFile = async ({ newComponentPath }) => {
@@ -92,6 +100,7 @@ async function generateFiles(directory, options) {
     await createPackageJSON({ options, newComponentPath });
     await createDefinitionJson({ options, newComponentPath });
     await createComponentIndexFile({ options, newComponentPath });
+    await createComponentTestFile({ options, newComponentPath });
     await createGitIgnoreFile({ newComponentPath });
 
     console.log(chalk.grey('Installing dependencies...'));
