@@ -27,7 +27,7 @@ module.exports = opts => {
       build: 'create-incorta-component package',
       start: 'create-incorta-component start',
       start: 'create-incorta-component start',
-      test: 'vitest'
+      test: 'create-incorta-component test'
     },
     peerDependencies: {
       react: '^17.0.2',

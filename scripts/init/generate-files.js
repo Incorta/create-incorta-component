@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const fse = require('fs-extra');
 const { join, resolve } = require('path');
 const shelljs = require('shelljs');
+const path = require('path');
 
 const componentPackageJsonGenerator = require('../../resources/templates/package.json.js');
 const definitionJsonGenerator = require('../../resources/templates/definition.json.js');
@@ -103,9 +104,25 @@ async function generateFiles(directory, options) {
     await createComponentTestFile({ options, newComponentPath });
     await createGitIgnoreFile({ newComponentPath });
 
-    console.log(chalk.grey('Installing dependencies...'));
+    let packageManager = 'npm';
+    let currentDir = currentProcessDir;
+    while (currentDir !== '/') {
+      if (fse.existsSync(path.join(currentDir, 'yarn.lock'))) {
+        packageManager = 'yarn';
+        break;
+      } else if (fse.existsSync(path.join(currentDir, 'pnpm-lock.yaml'))) {
+        packageManager = 'pnpm';
+        break;
+      } else if (fse.existsSync(path.join(currentDir, 'package-lock.json'))) {
+        packageManager = 'npm';
+        break;
+      }
+      currentDir = path.dirname(currentDir);
+    }
 
-    shelljs.exec('npm install', {
+    console.log(chalk.grey(`Using ${packageManager} as the package manager`));
+
+    shelljs.exec(`${packageManager} install`, {
       stdio: 'inherit',
       cwd: newComponentPath
     });
