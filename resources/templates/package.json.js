@@ -25,7 +25,9 @@ module.exports = opts => {
       postinstall: 'npm run generate',
       generate: 'create-incorta-component generate',
       build: 'create-incorta-component package',
-      start: 'create-incorta-component start'
+      start: 'create-incorta-component start',
+      start: 'create-incorta-component start',
+      test: 'create-incorta-component test'
     },
     peerDependencies: {
       react: '^17.0.2',
@@ -36,7 +38,7 @@ module.exports = opts => {
       '@testing-library/react': '^9.5.0',
       '@testing-library/user-event': '^7.2.1',
       '@types/jest': '^25.1.4',
-      '@types/node': '^12.12.38',
+      '@types/node': '^20.10.4',
       '@types/react': '^17.0.14',
       '@types/react-dom': '^17.0.9',
       '@typescript-eslint/eslint-plugin': '^2.26.0',
@@ -58,7 +60,9 @@ module.exports = opts => {
       prettier: '^2.0.4',
       'react-scripts': '4.0.3',
       typescript: '^4.1.3',
-      '@incorta-org/create-incorta-component': packageJSON.version
+      '@incorta-org/create-incorta-component': packageJSON.version,
+      vitest: '^0.31.4',
+      'vitest-dom': '^0.1.0'
     },
     files: ['dist'],
     dependencies: {

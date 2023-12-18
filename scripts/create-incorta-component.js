@@ -5,6 +5,7 @@ const { Command } = require('commander');
 const runInit = require('./init/index');
 const runPackage = require('./package/index');
 const runStart = require('./start/index');
+const runTest = require('./test/index');
 const runGenerate = require('./generate/index');
 
 const checkBeforeInit = require('../utils/check-requirements');
@@ -29,6 +30,13 @@ createIncortaComponent
   .description('Start development server')
   .action(() => {
     runStart();
+  });
+
+createIncortaComponent
+  .command('test')
+  .description('Run testing using vitest')
+  .action(() => {
+    runTest();
   });
 
 createIncortaComponent

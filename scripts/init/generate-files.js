@@ -2,10 +2,12 @@ const chalk = require('chalk');
 const fse = require('fs-extra');
 const { join, resolve } = require('path');
 const shelljs = require('shelljs');
+const path = require('path');
 
 const componentPackageJsonGenerator = require('../../resources/templates/package.json.js');
 const definitionJsonGenerator = require('../../resources/templates/definition.json.js');
 const componentIndexGenerator = require('../../resources/templates/index.tsx.js');
+const componentTestGenerator = require('../../resources/templates/test.tsx.js');
 
 const createPackageJSON = async ({ options, newComponentPath }) => {
   const { directory, author, description } = options;
@@ -44,6 +46,13 @@ const createComponentIndexFile = async ({ options, newComponentPath }) => {
 
   const componentPath = join(newComponentPath, 'src', `${pascalCaseName}.tsx`);
   await fse.writeFile(componentPath, component);
+};
+
+const createComponentTestFile = async ({ options, newComponentPath }) => {
+  let { component, pascalCaseName } = componentTestGenerator(options);
+
+  const indexPath = join(newComponentPath, 'src', `${pascalCaseName}.test.tsx`);
+  await fse.writeFile(indexPath, component);
 };
 
 const createGitIgnoreFile = async ({ newComponentPath }) => {
@@ -92,11 +101,28 @@ async function generateFiles(directory, options) {
     await createPackageJSON({ options, newComponentPath });
     await createDefinitionJson({ options, newComponentPath });
     await createComponentIndexFile({ options, newComponentPath });
+    await createComponentTestFile({ options, newComponentPath });
     await createGitIgnoreFile({ newComponentPath });
 
-    console.log(chalk.grey('Installing dependencies...'));
+    let packageManager = 'npm';
+    let currentDir = currentProcessDir;
+    while (currentDir !== '/') {
+      if (fse.existsSync(path.join(currentDir, 'yarn.lock'))) {
+        packageManager = 'yarn';
+        break;
+      } else if (fse.existsSync(path.join(currentDir, 'pnpm-lock.yaml'))) {
+        packageManager = 'pnpm';
+        break;
+      } else if (fse.existsSync(path.join(currentDir, 'package-lock.json'))) {
+        packageManager = 'npm';
+        break;
+      }
+      currentDir = path.dirname(currentDir);
+    }
 
-    shelljs.exec('npm install', {
+    console.log(chalk.grey(`Using ${packageManager} as the package manager`));
+
+    shelljs.exec(`${packageManager} install`, {
       stdio: 'inherit',
       cwd: newComponentPath
     });
