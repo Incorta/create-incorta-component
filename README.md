@@ -23,3 +23,7 @@ This lets you create new Incorta components and run the testing server.
 ```bash
 % create-incorta-component new
 ```
+
+#### Compatibility
+
+- Components created with create-incorta-component version `2.x.x` are compatible with incorta release `2022.12.0` or higher
