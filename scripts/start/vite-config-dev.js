@@ -120,6 +120,9 @@ module.exports = defineConfig({
       }
     }
   ],
+  define: {
+    'process.env': '({})'
+  },
   build: {
     outDir: resolvePath('dist/content'),
     minify: false,

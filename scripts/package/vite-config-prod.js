@@ -45,6 +45,9 @@ module.exports = defineConfig({
       hook: 'writeBundle' // notice here
     })
   ],
+  define: {
+    'process.env': '({})'
+  },
   build: {
     outDir: resolvePath('dist/content'),
     minify: true,
