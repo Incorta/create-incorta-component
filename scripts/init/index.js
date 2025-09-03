@@ -22,8 +22,17 @@ async function initProject(dir, program) {
   const options = {
     description: prompt.description,
     author: prompt.author,
-    directory
+    directory,
+    assistant: !!(program && program.assistant)
   };
+  if (options.assistant) {
+    const generateAssistant = require('../assistant/generate-files');
+    return generateAssistant(directory, options).then(() => {
+      if (process.platform === 'win32') {
+        process.exit(0);
+      }
+    });
+  }
   return generateFiles(directory, options).then(() => {
     if (process.platform === 'win32') {
       process.exit(0);
