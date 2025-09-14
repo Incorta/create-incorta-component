@@ -104,45 +104,65 @@ let io = socket(server, {
 // Socket.IO client to connect to chat app at localhost:5173
 let chatAppClient = null;
 let chatAppReconnectInterval = null;
+let lastConnectionAttempt = 0;
+let connectionFailCount = 0;
+const MAX_LOG_INTERVAL = 30000; // Log at most every 30 seconds
+const MAX_RECONNECT_ATTEMPTS = 10;
 
 function connectToChatApp() {
+  const now = Date.now();
+  
+  // Throttle connection attempts and logging
+  if (now - lastConnectionAttempt < 5000) {
+    return; // Don't attempt connection more than once every 5 seconds
+  }
+  lastConnectionAttempt = now;
+
   try {
+    // Stop trying after too many failures to prevent spam
+    if (connectionFailCount >= MAX_RECONNECT_ATTEMPTS) {
+      return;
+    }
+
     chatAppClient = SocketIOClient('http://localhost:5173', {
       transports: ['websocket', 'polling'],
       timeout: 5000,
-      forceNew: true
+      forceNew: true,
+      reconnection: false, // Disable auto-reconnection to prevent spam
     });
 
     chatAppClient.on('connect', () => {
       console.log(chalk.green('[assistant-dev] Connected to chat app at localhost:5173'));
+      connectionFailCount = 0; // Reset fail count on successful connection
       if (chatAppReconnectInterval) {
-        clearInterval(chatAppReconnectInterval);
         chatAppReconnectInterval = null;
       }
     });
 
     chatAppClient.on('disconnect', (reason) => {
-      console.log(chalk.yellow(`[assistant-dev] Disconnected from chat app: ${reason}`));
       scheduleReconnectToChatApp();
     });
 
     chatAppClient.on('connect_error', (error) => {
-      console.log(chalk.red(`[assistant-dev] Failed to connect to chat app: ${error.message}`));
+      connectionFailCount++;
       scheduleReconnectToChatApp();
     });
 
   } catch (error) {
-    console.log(chalk.red(`[assistant-dev] Error creating chat app connection: ${error.message}`));
+    connectionFailCount++;
     scheduleReconnectToChatApp();
   }
 }
 
 function scheduleReconnectToChatApp() {
-  if (!chatAppReconnectInterval) {
-    chatAppReconnectInterval = setInterval(() => {
-      console.log(chalk.blue('[assistant-dev] Attempting to reconnect to chat app...'));
+  if (!chatAppReconnectInterval && connectionFailCount < MAX_RECONNECT_ATTEMPTS) {
+    // Exponential backoff for reconnection attempts
+    const delay = Math.min(5000 * Math.pow(2, Math.min(connectionFailCount, 5)), 60000);
+    
+    chatAppReconnectInterval = setTimeout(() => {
+      chatAppReconnectInterval = null;
       connectToChatApp();
-    }, 5000); // Try to reconnect every 5 seconds
+    }, delay);
   }
 }
 
@@ -150,13 +170,14 @@ function scheduleReconnectToChatApp() {
 connectToChatApp();
 
 // Handle all Socket.IO connections
+let connectionCount = 0;
 io.on('connection', (socket) => {
-  console.log(chalk.green(`[assistant-dev] Socket.IO client connected: ${socket.id}`));
+  connectionCount++;
 
   // Handle backend notifications (from Python WebSocketManager)
   socket.on('backend_notification', (data) => {
     try {
-      console.log(chalk.blue('[assistant-dev] Received backend notification:'), data);
+      console.log(chalk.blue(`[assistant-dev] Backend notification: ${data.type}`));
 
       // Forward chain completion notifications to chat app
       if (data.type === 'CHAIN_COMPLETION' && chatAppClient && chatAppClient.connected) {
@@ -166,7 +187,6 @@ io.on('connection', (socket) => {
           session_id: data.payload?.session_id,
           timestamp: data.timestamp
         });
-        console.log(chalk.green(`[assistant-dev] Forwarded chain completion for "${data.payload?.chain_name}" to chat app`));
       }
 
       // Also broadcast to frontend clients listening for chain completions
@@ -178,20 +198,17 @@ io.on('connection', (socket) => {
       });
 
     } catch (error) {
-      console.log(chalk.red('[assistant-dev] Error processing backend notification:'), error);
     }
   });
 
   // Handle file change notifications (from frontend clients)
   socket.on('file_change_request', (data) => {
-    console.log(chalk.blue('[assistant-dev] File change request received:'), data);
     // Trigger file update notification
     notifyIncortaForUpdate();
   });
 
   // Handle chat messages (if needed for direct communication)
   socket.on('chat_message', (data) => {
-    console.log(chalk.blue('[assistant-dev] Chat message received:'), data);
     // Forward to chat app if needed
     if (chatAppClient && chatAppClient.connected) {
       chatAppClient.emit('message', data);
@@ -199,11 +216,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', (reason) => {
-    console.log(chalk.yellow(`[assistant-dev] Socket.IO client disconnected: ${socket.id}, reason: ${reason}`));
+    connectionCount--;
   });
 
   socket.on('error', (error) => {
-    console.log(chalk.red('[assistant-dev] Socket.IO error:'), error);
   });
 });
 
