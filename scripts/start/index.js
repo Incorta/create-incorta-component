@@ -15,6 +15,7 @@ async function runDevServer() {
     let configFilePath = isAssistant
       ? path.resolve(__dirname, '../start-assistant/vite-config-assistant-dev.js')
       : path.resolve(__dirname, './vite-config-dev.js');
+      
     execSync(`${viteBinPath} build --watch --config "${configFilePath}"`);
   } catch (e) {
     console.log(e);

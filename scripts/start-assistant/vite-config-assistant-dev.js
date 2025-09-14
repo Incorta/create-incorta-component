@@ -6,6 +6,9 @@ const { resolvePath } = require('../utils');
 const path = require('path');
 const cors = require('cors');
 const socket = require('socket.io');
+const { Server: SocketIOServer } = require('socket.io');
+const { io: SocketIOClient } = require('socket.io-client');
+const WebSocket = require('ws');
 const chalk = require('chalk');
 const debounce = require('debounce');
 
@@ -91,10 +94,117 @@ app.post('/prompt', async (req, res) => {
   }
 });
 
+// Single Socket.IO server for all communications
 let io = socket(server, {
   cors: {
     origin: '*'
   }
+});
+
+// Socket.IO client to connect to chat app at localhost:5173
+let chatAppClient = null;
+let chatAppReconnectInterval = null;
+
+function connectToChatApp() {
+  try {
+    chatAppClient = SocketIOClient('http://localhost:5173', {
+      transports: ['websocket', 'polling'],
+      timeout: 5000,
+      forceNew: true
+    });
+
+    chatAppClient.on('connect', () => {
+      console.log(chalk.green('[assistant-dev] Connected to chat app at localhost:5173'));
+      if (chatAppReconnectInterval) {
+        clearInterval(chatAppReconnectInterval);
+        chatAppReconnectInterval = null;
+      }
+    });
+
+    chatAppClient.on('disconnect', (reason) => {
+      console.log(chalk.yellow(`[assistant-dev] Disconnected from chat app: ${reason}`));
+      scheduleReconnectToChatApp();
+    });
+
+    chatAppClient.on('connect_error', (error) => {
+      console.log(chalk.red(`[assistant-dev] Failed to connect to chat app: ${error.message}`));
+      scheduleReconnectToChatApp();
+    });
+
+  } catch (error) {
+    console.log(chalk.red(`[assistant-dev] Error creating chat app connection: ${error.message}`));
+    scheduleReconnectToChatApp();
+  }
+}
+
+function scheduleReconnectToChatApp() {
+  if (!chatAppReconnectInterval) {
+    chatAppReconnectInterval = setInterval(() => {
+      console.log(chalk.blue('[assistant-dev] Attempting to reconnect to chat app...'));
+      connectToChatApp();
+    }, 5000); // Try to reconnect every 5 seconds
+  }
+}
+
+// Initialize connection to chat app
+connectToChatApp();
+
+// Handle all Socket.IO connections
+io.on('connection', (socket) => {
+  console.log(chalk.green(`[assistant-dev] Socket.IO client connected: ${socket.id}`));
+
+  // Handle backend notifications (from Python WebSocketManager)
+  socket.on('backend_notification', (data) => {
+    try {
+      console.log(chalk.blue('[assistant-dev] Received backend notification:'), data);
+
+      // Forward chain completion notifications to chat app
+      if (data.type === 'CHAIN_COMPLETION' && chatAppClient && chatAppClient.connected) {
+        chatAppClient.emit('chain_completion', {
+          chain_name: data.payload?.chain_name,
+          status: data.payload?.status,
+          session_id: data.payload?.session_id,
+          timestamp: data.timestamp
+        });
+        console.log(chalk.green(`[assistant-dev] Forwarded chain completion for "${data.payload?.chain_name}" to chat app`));
+      }
+
+      // Also broadcast to frontend clients listening for chain completions
+      io.emit('chain_completion', {
+        chain_name: data.payload?.chain_name,
+        status: data.payload?.status,
+        session_id: data.payload?.session_id,
+        timestamp: data.timestamp
+      });
+
+    } catch (error) {
+      console.log(chalk.red('[assistant-dev] Error processing backend notification:'), error);
+    }
+  });
+
+  // Handle file change notifications (from frontend clients)
+  socket.on('file_change_request', (data) => {
+    console.log(chalk.blue('[assistant-dev] File change request received:'), data);
+    // Trigger file update notification
+    notifyIncortaForUpdate();
+  });
+
+  // Handle chat messages (if needed for direct communication)
+  socket.on('chat_message', (data) => {
+    console.log(chalk.blue('[assistant-dev] Chat message received:'), data);
+    // Forward to chat app if needed
+    if (chatAppClient && chatAppClient.connected) {
+      chatAppClient.emit('message', data);
+    }
+  });
+
+  socket.on('disconnect', (reason) => {
+    console.log(chalk.yellow(`[assistant-dev] Socket.IO client disconnected: ${socket.id}, reason: ${reason}`));
+  });
+
+  socket.on('error', (error) => {
+    console.log(chalk.red('[assistant-dev] Socket.IO error:'), error);
+  });
 });
 
 let notifyIncortaForUpdate = debounce(() => {
