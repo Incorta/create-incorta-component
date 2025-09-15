@@ -180,14 +180,14 @@ io.on('connection', (socket) => {
       console.log(chalk.blue(`[assistant-dev] Backend notification: ${data.type}`));
 
       // Forward chain completion notifications to chat app
-      if (data.type === 'CHAIN_COMPLETION' && chatAppClient && chatAppClient.connected) {
-        chatAppClient.emit('chain_completion', {
-          chain_name: data.payload?.chain_name,
-          status: data.payload?.status,
-          session_id: data.payload?.session_id,
-          timestamp: data.timestamp
-        });
-      }
+      // if (data.type === 'CHAIN_COMPLETION' && chatAppClient && chatAppClient.connected) {
+      //   chatAppClient.emit('chain_completion', {
+      //     chain_name: data.payload?.chain_name,
+      //     status: data.payload?.status,
+      //     session_id: data.payload?.session_id,
+      //     timestamp: data.timestamp
+      //   });
+      // }
 
       // Also broadcast to frontend clients listening for chain completions
       io.emit('chain_completion', {
@@ -198,20 +198,6 @@ io.on('connection', (socket) => {
       });
 
     } catch (error) {
-    }
-  });
-
-  // Handle file change notifications (from frontend clients)
-  socket.on('file_change_request', (data) => {
-    // Trigger file update notification
-    notifyIncortaForUpdate();
-  });
-
-  // Handle chat messages (if needed for direct communication)
-  socket.on('chat_message', (data) => {
-    // Forward to chat app if needed
-    if (chatAppClient && chatAppClient.connected) {
-      chatAppClient.emit('message', data);
     }
   });
 
