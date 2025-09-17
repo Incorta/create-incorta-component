@@ -39,56 +39,22 @@ const createAssistantPackage = async () => {
     // }
 
     // Build the frontend component using the assistant production config
-    console.log(chalk.blue('🔨 Building frontend component...'));
     let vitePath = require.resolve('vite');
     let viteBinPath = path.join(vitePath, '../..', '.bin', 'vite');
     let configFilePath = path.resolve(__dirname, './vite-config-prod.js');
-    console.log(configFilePath);
     execSync(`${viteBinPath} build --config "${configFilePath}"`);
 
     // Ensure visualization_result.json exists in the assistant directory
     const visResultPath = path.join(assistantDistPath, 'visualization_result.json');
-    if (!await fs.pathExists(visResultPath)) {
+    const rootVisPath = path.join(process.cwd(), 'visualization_result.json');
+    
+    if (await fs.pathExists(rootVisPath)) {
+      console.log(chalk.blue('📊 Copying visualization_result.json from root...'));
+      await fs.copy(rootVisPath, visResultPath);
+    } else if (!await fs.pathExists(visResultPath)) {
       console.log(chalk.blue('📊 Creating empty visualization_result.json...'));
       await fs.writeJson(visResultPath, {}, { spaces: 2 });
     }
-
-    // Create a startup script
-//     const startupScript = `#!/bin/bash
-// # Assistant Server Startup Script
-
-// echo "🚀 Starting Incorta Assistant Server..."
-
-// # Check if node_modules exists
-// if [ ! -d "node_modules" ]; then
-//     echo "📦 Installing dependencies..."
-//     cp server-package.json package.json
-//     npm install
-// fi
-
-// echo "🔄 Starting server..."
-// node server.js
-// `;
-
-//     await fs.writeFile(path.join(assistantDistPath, 'start.sh'), startupScript);
-//     await fs.chmod(path.join(assistantDistPath, 'start.sh'), '755');
-
-//     // Create Windows batch file
-//     const startupBat = `@echo off
-// echo 🚀 Starting Incorta Assistant Server...
-
-// if not exist node_modules (
-//     echo 📦 Installing dependencies...
-//     copy server-package.json package.json
-//     npm install
-// )
-
-// echo 🔄 Starting server...
-// node server.js
-// pause
-// `;
-
-//     await fs.writeFile(path.join(assistantDistPath, 'start.bat'), startupBat);
 
     // Create the bundle
     console.log(chalk.gray('🗜️  Compressing assistant bundle...'));

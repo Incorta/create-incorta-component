@@ -138,7 +138,7 @@ async function generateAssistantFiles(directory, options) {
 
   // Write visualization_result.json as an empty JSON object
   try {
-    await fse.writeJSON(path.join(target, 'visualization_result.json'), {}, { spaces: 2 });
+    await fse.writeJSON(path.join(target,'src', 'visualization_result.json'), {}, { spaces: 2 });
   } catch (e) {
     console.log('[assistant] failed to write visualization_result.json', e);
   }

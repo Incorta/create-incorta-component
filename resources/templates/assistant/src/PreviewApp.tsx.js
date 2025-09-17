@@ -13,7 +13,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CONFIG } from './types/constants';
 import { VisualizationPipeline } from './components/VisualizationPipeline';
 import { LLMResponse } from './types/pipeline';
-import visualization_result from '../visualization_result.json';
+import visualization_result from './visualization_result.json';
 
 interface Props {
   context: Context<TContext>;

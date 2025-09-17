@@ -76,13 +76,28 @@ app.post('/prompt', async (req, res) => {
       console.log('[assistant-dev] failed writing definition.json', e);
     }
 
-    // Write visualization_result.json
+    // Write visualization_result.json to both locations for development
     try {
-      const visPath = path.resolve(process.cwd(), 'visualization_result.json');
+      // Write to root for backwards compatibility
+      const rootVisPath = path.resolve(process.cwd(), 'visualization_result.json');
+      // Write to src/ for new import path
+      const srcDir = path.resolve(process.cwd(), 'src');
+      const srcVisPath = path.resolve(srcDir, 'visualization_result.json');
+      
       const visContent = typeof visualization_result === 'string'
         ? visualization_result
         : JSON.stringify(visualization_result ?? {}, null, 2);
-      fs.writeFileSync(visPath, visContent);
+      
+      // Ensure src directory exists
+      if (!fs.existsSync(srcDir)) {
+        fs.mkdirSync(srcDir, { recursive: true });
+      }
+      
+      // Write to both locations
+      fs.writeFileSync(rootVisPath, visContent);
+      fs.writeFileSync(srcVisPath, visContent);
+      
+      console.log('[assistant-dev] Updated visualization_result.json in both root and src/');
     } catch (e) {
       console.log('[assistant-dev] failed writing visualization_result.json', e);
     }
@@ -124,7 +139,7 @@ function connectToChatApp() {
       return;
     }
 
-    chatAppClient = SocketIOClient('http://localhost:5173', {
+    chatAppClient = SocketIOClient('http://localhost:3000', {
       transports: ['websocket', 'polling'],
       timeout: 5000,
       forceNew: true,
@@ -132,7 +147,7 @@ function connectToChatApp() {
     });
 
     chatAppClient.on('connect', () => {
-      console.log(chalk.green('[assistant-dev] Connected to chat app at localhost:5173'));
+      console.log(chalk.green('[assistant-dev] Connected to chat app at localhost:3000'));
       connectionFailCount = 0; // Reset fail count on successful connection
       if (chatAppReconnectInterval) {
         chatAppReconnectInterval = null;
@@ -189,7 +204,6 @@ io.on('connection', (socket) => {
       //   });
       // }
 
-      // Also broadcast to frontend clients listening for chain completions
       io.emit('chain_completion', {
         chain_name: data.payload?.chain_name,
         status: data.payload?.status,
@@ -198,6 +212,7 @@ io.on('connection', (socket) => {
       });
 
     } catch (error) {
+      io.emit('error', error);
     }
   });
 

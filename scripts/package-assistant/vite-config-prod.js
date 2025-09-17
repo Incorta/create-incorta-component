@@ -4,8 +4,7 @@ const { defineConfig } = require('vite');
 const { resolvePath } = require('../utils');
 
 /**
- * Vite configuration for assistant production build
- * This config builds the frontend component and prepares the Express server for deployment
+ * define vite configurations
  */
 
 module.exports = defineConfig({
@@ -13,37 +12,22 @@ module.exports = defineConfig({
   plugins: [
     copy({
       targets: [
-        // Copy frontend assets and resources
         {
           src: resolvePath(['./assets/', './locales/', './package.json']),
           dest: './dist/assistant/content'
         },
-        // Copy visualization_result.json if it exists
         {
           src: resolvePath('./visualization_result.json'),
           dest: resolvePath('./dist/assistant/content'),
-          // Only copy if the file exists
-          filter: (src) => {
-            const fs = require('fs');
-            return fs.existsSync(src);
-          }
         },
-        // Copy and transform definition.json for the frontend component
         {
           src: resolvePath('./definition.json'),
           dest: resolvePath('./dist/assistant/content'),
           transform(contents) {
-            // Add Icon base64 bits for the component
+            // add Icon base64 bits
             const iconRegex = /"icon"[\s|\r\n]*:[\s|\r\n]*"(.*\.(.*))"/g;
             const jsonData = contents.toString();
-            const match = iconRegex.exec(jsonData);
-            
-            if (!match) {
-              // If no icon found, return as-is
-              return jsonData;
-            }
-            
-            const [, iconPath, ext] = match;
+            const [, iconPath, ext] = iconRegex.exec(jsonData);
 
             if (!['png', 'svg'].includes(ext)) {
               throw Error('Invalid icon format.');
@@ -60,7 +44,7 @@ module.exports = defineConfig({
 
             return jsonData.replace(iconRegex, newIcon);
           }
-        },
+          },
       ],
       hook: 'writeBundle'
     })
