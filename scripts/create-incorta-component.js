@@ -20,9 +20,10 @@ createIncortaComponent
   .command('new')
   .description('Create a new Incorta Component')
   .arguments('[directory]')
-  .action(directory => {
+  .option('--assistant', 'Generate assistant project (different structure)')
+  .action((directory, options) => {
     checkBeforeInit();
-    runInit(directory, createIncortaComponent);
+    runInit(directory, { assistant: options.assistant === true });
   });
 
 createIncortaComponent

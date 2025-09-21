@@ -4,6 +4,7 @@ const archiver = require('archiver');
 const chalk = require('chalk');
 const { resolvePath } = require('../utils');
 const { execSync } = require('child_process');
+const createAssistantPackage = require('../package-assistant/index');
 
 /**
  * @param {String} source
@@ -27,6 +28,17 @@ function zipDirectory(source, out) {
 
 const createBuildPackage = async () => {
   try {
+    // Detect assistant project by marker file
+    const markerPath = path.resolve(process.cwd(), '.incorta-assistant.json');
+    const isAssistant = await fs.pathExists(markerPath);
+
+    if (isAssistant) {
+      console.log(chalk.blue('🤖 Detected assistant project, using assistant packaging...'));
+      await createAssistantPackage();
+      return;
+    }
+
+    console.log(chalk.blue('📦 Packaging standard component...'));
     let vitePath = require.resolve('vite');
     let viteBinPath = path.join(vitePath, '../..', '.bin', 'vite');
     let configFilePath = path.resolve(__dirname, './vite-config-prod.js');
