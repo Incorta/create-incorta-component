@@ -121,7 +121,7 @@ module.exports = defineConfig({
     }
   ],
   define: {
-    'process.env': '({})'
+    'process.env': '{}'
   },
   build: {
     outDir: resolvePath('dist/content'),
@@ -131,6 +131,7 @@ module.exports = defineConfig({
       entry: resolvePath('src/index.tsx'),
       name: 'SDKComponent',
       fileName: () => `render.js`,
+      cssFileName: 'render',
       formats: ['iife']
     },
     rollupOptions: {

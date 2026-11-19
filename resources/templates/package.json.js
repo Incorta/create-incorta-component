@@ -19,7 +19,7 @@ module.exports = opts => {
     module: 'dist/index.modern.js',
     source: 'src/index.tsx',
     engines: {
-      node: '>=10'
+      node: '>=20'
     },
     scripts: {
       postinstall: 'npm run generate',
@@ -34,18 +34,18 @@ module.exports = opts => {
       'react-dom': '^17.0.2'
     },
     devDependencies: {
-      '@testing-library/jest-dom': '^4.2.4',
+      '@testing-library/jest-dom': '^5.16.5',
       '@testing-library/react': '^9.5.0',
       '@testing-library/user-event': '^7.2.1',
       '@types/jest': '^25.1.4',
       '@types/node': '^20.10.4',
       '@types/react': '^17.0.14',
       '@types/react-dom': '^17.0.9',
-      '@typescript-eslint/eslint-plugin': '^2.26.0',
-      '@typescript-eslint/parser': '^2.26.0',
+      '@typescript-eslint/eslint-plugin': '^4.33.0',
+      '@typescript-eslint/parser': '^4.33.0',
       'babel-eslint': '^10.0.3',
       'cross-env': '^7.0.2',
-      eslint: '^6.8.0',
+      eslint: '^7.32.0',
       'eslint-config-prettier': '^6.7.0',
       'eslint-config-standard': '^14.1.0',
       'eslint-config-standard-react': '^9.2.0',
@@ -55,13 +55,13 @@ module.exports = opts => {
       'eslint-plugin-promise': '^4.2.1',
       'eslint-plugin-react': '^7.17.0',
       'eslint-plugin-standard': '^4.0.1',
-      less: '^4.1.1',
+      jsdom: '^26.1.0',
+      less: '^4.7.0',
       'npm-run-all': '^4.1.5',
       prettier: '^2.0.4',
-      'react-scripts': '4.0.3',
       typescript: '^4.1.3',
       '@incorta-org/create-incorta-component': packageJSON.version,
-      vitest: '^0.31.4',
+      vitest: '^4.1.12',
       'vitest-dom': '^0.1.0'
     },
     files: ['dist'],
