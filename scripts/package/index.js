@@ -27,8 +27,8 @@ function zipDirectory(source, out) {
 
 const createBuildPackage = async () => {
   try {
-    let vitePath = require.resolve('vite');
-    let viteBinPath = path.join(vitePath, '../..', '.bin', 'vite');
+    let vitePath = require.resolve('vite/package.json');
+    let viteBinPath = `node "${path.join(vitePath, '..', 'bin', 'vite.js')}"`;
     let configFilePath = path.resolve(__dirname, './vite-config-prod.js');
     execSync(`${viteBinPath} build --config "${configFilePath}"`);
 
