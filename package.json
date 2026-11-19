@@ -3,7 +3,10 @@
   "description": "Generate a new incorta component",
   "main": "index.js",
   "version": "2.0.7",
-  "repository": "git@github.com:Incorta/create-incorta-component.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Incorta/create-incorta-component.git"
+  },
   "license": "MIT",
   "engines": {
     "node": ">=20"
